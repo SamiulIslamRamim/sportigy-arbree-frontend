@@ -75,6 +75,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 function RootComponent() {
   return (
     <>
+    
     <QueryClientProvider client={useCustomQueryClient}>
 
       <Outlet />
