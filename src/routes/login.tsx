@@ -25,9 +25,6 @@ export const Route = createFileRoute("/login")({
         to: search.redirect ?? (user?.role === "player" ? "/player/dashboard" : "/dashboard")
       })
     }
-    // if (useAuthStore.getState().isAuthenticated) {
-    //   throw redirect({ to: search.redirect ?? "/dashboard" });
-    // }
   },
   head: () => ({ meta: [{ title: "Sign in — Spotig" }] }),
   component: LoginPage,

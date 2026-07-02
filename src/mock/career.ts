@@ -18,4 +18,5 @@ export const mockCareer: CareerStatistics = {
     { format: "FIRST_CLASS", matches: 68, overs: 410.5, maidens: 62, wickets: 112, economy: 2.9, average: 24.8, bestBowling: "6/38", strikeRate: 52.6 },
     { format: "T20", matches: 140, overs: 180.2, maidens: 4, wickets: 88, economy: 7.6, average: 24.1, bestBowling: "4/16", strikeRate: 19.4 },
   ],
+  
 };

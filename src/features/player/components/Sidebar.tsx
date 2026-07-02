@@ -1,6 +1,8 @@
 import { useLogout } from "#/hooks/auth.hooks";
 import { cn } from "#/lib/utils";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Image } from "@unpic/react";
+import spotigy from '/f65d113906e0f6c5861d515830c6c6f3a4622fdf.png'
 import {
   LayoutDashboard,
   BarChart3,
@@ -17,7 +19,7 @@ import {
 } from "lucide-react";
 
 const items = [
-  { title: "Dashboard", url: "/player-dashboard", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/player/dashboard", icon: LayoutDashboard },
   { title: "Career Statistics", url: "/player-dashboard", icon: BarChart3, hash: "career" },
   { title: "Matches", url: "/player-dashboard", icon: Trophy, hash: "matches" },
   { title: "Team History", url: "/player-dashboard", icon: History },
@@ -42,10 +44,13 @@ export function PlayerSidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <aside className="flex h-full w-full flex-col gap-2 bg-card p-4">
       <Link to="/player/dashboard" className="mb-4 flex items-center gap-2 px-2" onClick={onNavigate}>
-        <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground">
-          <Zap className="h-5 w-5" />
-        </span>
-        <span className="font-display text-2xl tracking-widest">SPORTIGY</span>
+        <Image
+        src= {spotigy}
+        alt="sportigy"
+        layout="constrained"
+        height={65}
+        width={200}
+        />
       </Link>
 
       <nav className="flex flex-1 flex-col gap-1">
@@ -59,7 +64,7 @@ export function PlayerSidebar({ onNavigate }: { onNavigate?: () => void }) {
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 active
-                  ? "bg-primary text-primary-foreground shadow-sm"
+                  ? "bg-navy text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
