@@ -8,9 +8,6 @@ import { reportCustomError } from '#/lib/error-reporting'
 import useCustomQueryClient from '#/hooks/useQueryClient';
 import { Toaster } from '#/components/ui/sonner';
 
-export const Route = createRootRoute({
-  component: RootComponent,
-})
 
 function NotFoundComponent() {
   return (
@@ -70,6 +67,14 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     </div>
   );
 }
+
+export const Route = createRootRoute({
+  component: RootComponent, 
+  notFoundComponent: NotFoundComponent,
+  errorComponent: ErrorComponent,
+})
+
+
 
 
 function RootComponent() {

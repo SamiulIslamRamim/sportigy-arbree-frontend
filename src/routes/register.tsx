@@ -9,7 +9,7 @@ import { AuthLayout } from "#/features/auth/components/AuthLayout";
 import { PasswordInput } from "#/features/auth/components/PasswordInput";
 import type { UserRole } from "#/features/auth/types/auth.types";
 
-import { playerSection1, playerSection2, orgSection1, orgSection2, orgSection3, playerSection3 } from "#/features/schemas/auth.schema";
+import { playerSection1, playerSection2, orgSection1, orgSection2, orgSection3, playerSection3 } from "#/features/auth/schemas/auth.schema";
 import { useRegisterOrganization, useRegisterPlayer } from "#/hooks/auth.hooks";
 import { cn } from "#/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";

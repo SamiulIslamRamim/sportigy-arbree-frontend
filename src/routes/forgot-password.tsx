@@ -1,6 +1,6 @@
-import { forgotPasswordSchema } from '#/features/schemas/auth.schema'
+import { forgotPasswordSchema } from '#/features/auth/schemas/auth.schema'
 
-import type { ForgotPasswordValues } from '#/features/schemas/auth.schema'
+import type { ForgotPasswordValues } from '#/features/auth/schemas/auth.schema'
 import { useForgotPassword } from '#/hooks/auth.hooks'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { Controller, useForm } from 'react-hook-form'

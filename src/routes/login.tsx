@@ -5,8 +5,8 @@ import { Input } from "#/components/ui/input";
 import { AuthLayout } from "#/features/auth/components/AuthLayout";
 import { PasswordInput } from "#/features/auth/components/PasswordInput";
 import { useAuthStore } from "#/features/auth/store/auth.store";
-import { loginSchema } from "#/features/schemas/auth.schema";
-import type { LoginValues } from "#/features/schemas/auth.schema";
+import { loginSchema } from "#/features/auth/schemas/auth.schema";
+import type { LoginValues } from "#/features/auth/schemas/auth.schema";
 import { useLogin } from "#/hooks/auth.hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, Link, redirect, useNavigate, useSearch } from "@tanstack/react-router";
@@ -19,9 +19,15 @@ const searchSchema = z.object({ redirect: z.string().optional() });
 export const Route = createFileRoute("/login")({
   validateSearch: searchSchema,
   beforeLoad: ({ search }) => {
-    if (useAuthStore.getState().isAuthenticated) {
-      throw redirect({ to: search.redirect ?? "/dashboard" });
+    const {isAuthenticated, user} = useAuthStore.getState();
+    if(isAuthenticated){
+      throw redirect({
+        to: search.redirect ?? (user?.role === "player" ? "/player/dashboard" : "/dashboard")
+      })
     }
+    // if (useAuthStore.getState().isAuthenticated) {
+    //   throw redirect({ to: search.redirect ?? "/dashboard" });
+    // }
   },
   head: () => ({ meta: [{ title: "Sign in — Spotig" }] }),
   component: LoginPage,
@@ -37,10 +43,13 @@ function LoginPage() {
     defaultValues: { identifier: "", password: "", remember: false },
   });
 
+
   const onSubmit = (values: LoginValues) => {
     login.mutate(
       { identifier: values.identifier, password: values.password },
-      { onSuccess: () => navigate({ to: redirectTo ?? "/dashboard" }) },
+      { onSuccess: (data) => navigate({ to: redirectTo ?? (data.user?.role === "player"
+              ? "/player/dashboard"
+              : "/dashboard"), }) },
     );
   };
 
@@ -50,7 +59,7 @@ function LoginPage() {
       subtitle="Welcome back. Let's get you on the pitch."
       footer={
         <>
-          New to Spotig?{" "}
+          New to Sportigy ?{" "}
           <Link to="/register" className="text-primary hover:underline">
             Create an account
           </Link>

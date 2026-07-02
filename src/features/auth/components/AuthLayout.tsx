@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { Zap } from "lucide-react";
 import type { ReactNode } from "react";
+import spotigy from '/f65d113906e0f6c5861d515830c6c6f3a4622fdf.png';
+import { Image } from '@unpic/react';
+
 
 interface Props {
   title: string;
@@ -21,12 +23,17 @@ export function AuthLayout({ title, subtitle, children, footer }: Props) {
         }}
       />
       <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-8">
-        <Link to="/" className="inline-flex items-center gap-2 group w-fit">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[var(--shadow-glow)]">
-            <Zap className="h-4 w-4" />
-          </span>
-          <span className="font-display text-2xl tracking-wider">SPOTIG</span>
+        <div className="flex justify-center">
+          <Link to="/" >
+          <Image 
+          src={spotigy}
+          alt="sportigy"
+          layout="constrained"
+          height={65}
+          width={200}
+          />
         </Link>
+        </div>
 
         <div className="my-auto flex w-full justify-center py-12">
           <div className="w-full max-w-md">

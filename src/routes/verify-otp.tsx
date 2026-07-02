@@ -3,8 +3,8 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "#/components/ui/field
 import { Input } from "#/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "#/components/ui/input-otp";
 import { AuthLayout } from "#/features/auth/components/AuthLayout";
-import { otpSchema } from "#/features/schemas/auth.schema";
-import type { OtpValues } from "#/features/schemas/auth.schema";
+import { otpSchema } from "#/features/auth/schemas/auth.schema";
+import type { OtpValues } from "#/features/auth/schemas/auth.schema";
 import { useVerifyOtp } from "#/hooks/auth.hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";

@@ -1,22 +1,26 @@
 import { Button } from '#/components/ui/button'
-import { useAuthStore } from '#/features/auth/store/auth.store';
+import { useAuthStore } from '#/features/auth/store/auth.store'
 import { createFileRoute, Link, redirect } from '@tanstack/react-router'
-import { ArrowRight, Trophy, Users, Zap } from 'lucide-react';
+import { ArrowRight, Trophy, Users, Zap } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
   head: () => ({
     meta: [
-      { title: "Spotig — Where Athletes Get Spotted" },
+      { title: 'Spotig — Where Athletes Get Spotted' },
       {
-        name: "description",
+        name: 'description',
         content:
-          "Join Spotig. The platform connecting players and organizations across every sport.",
+          'Join Spotig. The platform connecting players and organizations across every sport.',
       },
     ],
   }),
   beforeLoad: () => {
-    if (useAuthStore.getState().isAuthenticated) {
-      throw redirect({ to: "/dashboard" });
+    const { isAuthenticated, user } = useAuthStore.getState()
+
+    if (isAuthenticated) {
+      throw redirect({
+        to: user?.role === 'player' ? '/player/dashboard' : '/dashboard',
+      })
     }
   },
   component: Landing,
@@ -30,7 +34,7 @@ function Landing() {
         className="absolute inset-0 opacity-50"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 15% 20%, color-mix(in oklab, var(--primary) 30%, transparent), transparent 45%), radial-gradient(circle at 85% 80%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 50%)",
+            'radial-gradient(circle at 15% 20%, color-mix(in oklab, var(--primary) 30%, transparent), transparent 45%), radial-gradient(circle at 85% 80%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 50%)',
         }}
       />
       <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
@@ -77,9 +81,21 @@ function Landing() {
 
         <div className="mt-24 grid gap-6 md:grid-cols-3">
           {[
-            { icon: Trophy, title: "For Players", body: "Build your profile, share your highlights, get discovered." },
-            { icon: Users, title: "For Organizations", body: "Scout talent, manage trials, recruit the next stars." },
-            { icon: Zap, title: "Built for Speed", body: "Modern, fast, mobile-first. Designed for athletes." },
+            {
+              icon: Trophy,
+              title: 'For Players',
+              body: 'Build your profile, share your highlights, get discovered.',
+            },
+            {
+              icon: Users,
+              title: 'For Organizations',
+              body: 'Scout talent, manage trials, recruit the next stars.',
+            },
+            {
+              icon: Zap,
+              title: 'Built for Speed',
+              body: 'Modern, fast, mobile-first. Designed for athletes.',
+            },
           ].map(({ icon: Icon, title, body }) => (
             <div
               key={title}
@@ -93,5 +109,5 @@ function Landing() {
         </div>
       </main>
     </div>
-  );
+  )
 }
