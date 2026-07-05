@@ -8,7 +8,7 @@ export function LatestResultsCard({ results }: { results: LatestResult[] }) {
   const r = results[0];
 //   if (!r) return null;
   return (
-    <Card className="overflow-hidden border-border/60">
+    <Card className="overflow-hidden border-border/60 [--card-spacing:--spacing(0)]">
       <CardHeader className="rounded-b-none bg-gradient-to-br from-primary to-primary/70 p-4 text-primary-foreground">
         <CardTitle className="text-center text-sm font-semibold uppercase tracking-widest">Latest Results</CardTitle>
       </CardHeader>

@@ -58,7 +58,7 @@ function PlayerDashboardPage() {
 
                 <SportTabs value={sport} onChange={setSport} />
 
-                <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+                <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
                   <div className="space-y-6 min-w-0">
                     <div className="grid gap-4 md:grid-cols-2">
                       <StatsCard

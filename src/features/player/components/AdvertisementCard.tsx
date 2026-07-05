@@ -6,7 +6,7 @@ export function AdvertisementCard({ className, height = "h-40" }: { className?: 
   return (
     <Card
       className={cn(
-        "grid place-items-center overflow-hidden border-dashed bg-gradient-to-br from-muted/60 via-muted/40 to-muted/60 text-muted-foreground",
+        "grid place-items-center overflow-hidden border-dashed bg-gradient-to-br from-muted/60 via-muted/40 to-muted/60 text-muted-foreground ",
         height,
         className,
       )}

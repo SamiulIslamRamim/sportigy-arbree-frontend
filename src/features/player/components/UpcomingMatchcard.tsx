@@ -6,7 +6,7 @@ import type { UpcomingMatch } from "../types";
 export function UpcomingMatchCard({ match }: { match: UpcomingMatch }) {
   const date = new Date(match.date);
   return (
-    <Card className="overflow-hidden border-border/60">
+    <Card className="overflow-hidden border-border/60 [--card-spacing:--spacing(0)]">
       <CardHeader className="rounded-b-none bg-gradient-to-br from-slate-800 to-slate-900 p-4 text-white">
         <CardTitle className="text-center text-sm font-semibold uppercase tracking-widest">Next Match</CardTitle>
       </CardHeader>
