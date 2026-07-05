@@ -3,8 +3,6 @@ import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "#/c
 import { Input } from "#/components/ui/input";
 import { Label } from "#/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "#/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/components/ui/select";
-import { ORG_TYPES, SPORTS_CATEGORIES } from "#/constants/categories";
 import { AuthLayout } from "#/features/auth/components/AuthLayout";
 import { PasswordInput } from "#/features/auth/components/PasswordInput";
 import type { UserRole } from "#/features/auth/types/auth.types";
