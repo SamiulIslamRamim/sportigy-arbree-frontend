@@ -15,7 +15,6 @@ import {
   Star,
   Settings,
   LogOut,
-  Zap,
 } from "lucide-react";
 
 const items = [
