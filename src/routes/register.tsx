@@ -20,6 +20,8 @@ import { Controller, useForm } from "react-hook-form";
 import type{ FieldValues, Path, UseFormReturn} from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
+import { useCategories, useOrgCategories } from "#/hooks/categories.hooks";
+import { MultiSelect } from "#/components/multi-select";
 
 export const Route = createFileRoute("/register")({
   head: () => ({ meta: [{ title: "Create account — Spotig" }] }),
@@ -195,6 +197,7 @@ function PlayerStep2({
       websiteUrl: "",
     },
   });
+  const { data: categoryOptions = [], isLoading } = useCategories();
   return (
     
       <form onSubmit={form.handleSubmit(onNext)} className="flex flex-col gap-6">
@@ -205,32 +208,23 @@ function PlayerStep2({
     </div>
 
     <Controller
-      name="categories"
-      control={form.control}
-      render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid}>
-          <FieldLabel htmlFor="field-categories">Sports category</FieldLabel>
-          <Select
-            value={field.value[0] ?? ""}
-            onValueChange={(v) => field.onChange([v])}
-          >
-            <SelectTrigger id="field-categories" aria-invalid={fieldState.invalid}>
-              <SelectValue placeholder="Choose your sport" />
-            </SelectTrigger>
-            <SelectContent>
-              {SPORTS_CATEGORIES.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {fieldState.invalid && (
-            <FieldError errors={[fieldState.error]} />
+          name="categories"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="field-categories">Sports category</FieldLabel>
+              <MultiSelect
+                id="field-categories"
+                options={categoryOptions}
+                value={field.value}
+                onChange={field.onChange}
+                placeholder={isLoading ? "Loading..." : "Choose your sport(s)"}
+                disabled={isLoading}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
-        </Field>
-      )}
-    />
+        />
 
     <TextField
       form={form}
@@ -339,6 +333,7 @@ function OrgStep1({
       websiteUrl: "",
     },
   });
+  const { data: categoryOptions = [], isLoading } = useOrgCategories();
   return (
    <form onSubmit={form.handleSubmit(onNext)} className="flex flex-col gap-6">
   <FieldGroup className="gap-4">
@@ -348,32 +343,23 @@ function OrgStep1({
     <TextField form={form} name="username" label="Username" />
 
     <Controller
-      name="categories"
-      control={form.control}
-      render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid}>
-          <FieldLabel htmlFor="field-categories">Organization type</FieldLabel>
-          <Select
-            value={field.value[0] ?? ""}
-            onValueChange={(v) => field.onChange([v])}
-          >
-            <SelectTrigger id="field-categories" aria-invalid={fieldState.invalid}>
-              <SelectValue placeholder="Select type" />
-            </SelectTrigger>
-            <SelectContent>
-              {ORG_TYPES.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {fieldState.invalid && (
-            <FieldError errors={[fieldState.error]} />
+          name="categories"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="field-categories">Organization type</FieldLabel>
+              <MultiSelect
+                id="field-categories"
+                options={categoryOptions}
+                value={field.value}
+                onChange={field.onChange}
+                placeholder={isLoading ? "Loading..." : "Select type(s)"}
+                disabled={isLoading}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
-        </Field>
-      )}
-    />
+        />
 
     <TextField
       form={form}
