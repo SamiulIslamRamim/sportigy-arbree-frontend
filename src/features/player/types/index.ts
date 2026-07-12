@@ -7,7 +7,7 @@ export type MatchResult = "WIN" | "LOSS" | "DRAW" | "NO_RESULT";
 export interface PlayerProfile {
   id: string;
   fullName: string;
-  avatarUrl: string;
+  // avatarUrl: string;
   playingRole: string;
   battingStyle: string;
   bowlingStyle: string;

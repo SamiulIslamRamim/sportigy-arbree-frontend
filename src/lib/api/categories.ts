@@ -14,3 +14,6 @@ export async function fetchOrgCategories(): Promise<CategoryOption[]> {
   if (!res.ok) throw new Error('Failed to fetch org categories');
   return (await res.json()).categories;
 }
+
+
+
