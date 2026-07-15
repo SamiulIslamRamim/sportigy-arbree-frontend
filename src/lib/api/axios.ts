@@ -43,7 +43,7 @@ async function refreshAccessToken(): Promise<string | null> {
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = useAuthStore.getState().accessToken;
-  if (token) {
+  if (token ) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;

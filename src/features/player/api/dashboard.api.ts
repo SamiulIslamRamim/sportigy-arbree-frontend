@@ -3,7 +3,6 @@ import { mockDashboard } from "#/mock/dashboard";
 import { mockRecentMatches, mockUpcomingMatch } from "#/mock/matches";
 import type { CareerStatistics, DashboardResponse, RecentMatch, UpcomingMatch } from "../types";
 
-
 const delay = <T>(data: T, ms = 250): Promise<T> =>
   new Promise((resolve) => setTimeout(() => resolve(data), ms));
 

@@ -1,22 +1,21 @@
-import { Sheet, SheetContent } from '#/components/ui/sheet';
-import { AdvertisementCard } from '#/features/player/components/AdvertisementCard';
-import { CareerStatisticsTable } from '#/features/player/components/CareeerStatisticTable';
-import { DashboardSkeleton } from '#/features/player/components/DashboardSkeleton';
-import { LatestResultsCard } from '#/features/player/components/LatestResultsCard';
-import { PlayerProfileCard } from '#/features/player/components/PlayerProfileCard';
-import { RecentMatchesTable } from '#/features/player/components/RecentmstchesTable';
-import { PlayerSidebar } from '#/features/player/components/Sidebar';
-import { SportTabs } from '#/features/player/components/SportTabs';
-import { StatsCard } from '#/features/player/components/StatsCard';
-import { TeamsCard } from '#/features/player/components/TeamsCard';
-import { TopNavbar } from '#/features/player/components/TopNavbar';
-import { UpcomingMatchCard } from '#/features/player/components/UpcomingMatchcard';
-import { useDashboard } from '#/features/player/hooks';
-import { formatCurrency } from '#/features/player/lib/format';
-import type { SportKey } from '#/features/player/types';
-import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react';
-
+import { Sheet, SheetContent } from "#/components/ui/sheet";
+import { AdvertisementCard } from "#/features/player/components/AdvertisementCard";
+import { CareerStatisticsTable } from "#/features/player/components/CareeerStatisticTable";
+import { DashboardSkeleton } from "#/features/player/components/DashboardSkeleton";
+import { LatestResultsCard } from "#/features/player/components/LatestResultsCard";
+import { PlayerProfileCard } from "#/features/player/components/PlayerProfileCard";
+import { RecentMatchesTable } from "#/features/player/components/RecentmstchesTable";
+import { PlayerSidebar } from "#/features/player/components/Sidebar";
+import { SportTabs } from "#/features/player/components/SportTabs";
+import { StatsCard } from "#/features/player/components/StatsCard";
+import { TeamsCard } from "#/features/player/components/TeamsCard";
+import { TopNavbar } from "#/features/player/components/TopNavbar";
+import { UpcomingMatchCard } from "#/features/player/components/UpcomingMatchcard";
+import { useDashboard } from "#/features/player/hooks";
+import { formatCurrency } from "#/features/player/lib/format";
+import type { SportKey } from "#/features/player/types";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/player/dashboard")({
   head: () => ({ meta: [{ title: "Player Dashboard — Spotig" }] }),
@@ -49,16 +48,17 @@ function PlayerDashboardPage() {
           <TopNavbar onMenuClick={() => setMobileNav(true)} />
 
           <main className="mx-auto max-w-[1400px] space-y-6 p-4 md:p-6">
+            <PlayerProfileCard />
             {isLoading || !data ? (
               <DashboardSkeleton />
             ) : (
               <>
-                <PlayerProfileCard profile={data.profile} />
                 <AdvertisementCard height="h-32 md:h-40" />
+
 
                 <SportTabs value={sport} onChange={setSport} />
 
-                <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+                <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
                   <div className="space-y-6 min-w-0">
                     <div className="grid gap-4 md:grid-cols-2">
                       <StatsCard
@@ -108,6 +108,3 @@ function PlayerDashboardPage() {
     </div>
   );
 }
-
-
-
