@@ -12,42 +12,45 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000";
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
+
+// ─── Request Interceptor ────────────────────────────────────────────
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const token = useAuthStore.getState().accessToken;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// ─── Response Interceptor — Auto-refresh on 401 ─────────────────────
 let refreshPromise: Promise<string | null> | null = null;
 
 async function refreshAccessToken(): Promise<string | null> {
-  const { refreshToken, setTokens, logout } = useAuthStore.getState();
-  if (!refreshToken) {
-    logout();
-    return null;
-  }
   try {
-    const res = await axios.post(`${BASE_URL}/token/refresh/`, {
-      refresh: refreshToken,
-    });
-    const newAccess: string = res.data.access ?? res.data.accessToken;
-    const newRefresh: string =
-      res.data.refresh ?? res.data.refreshToken ?? refreshToken;
-    setTokens(newAccess, newRefresh);
+
+    const res = await axios.post(
+      `${BASE_URL}/token/refresh/`,
+      {},                         // Empty body
+      { withCredentials: true }, 
+    );
+    const newAccess: string = res.data.accessToken ?? res.data.access;
+    useAuthStore.getState().setAccessTokens(newAccess);
     return newAccess;
   } catch {
-    logout();
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
+    // Refresh failed — clear state and redirect to login
+    useAuthStore.getState().logout();
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
     }
     return null;
   }
 }
 
 
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = useAuthStore.getState().accessToken;
-  if (token ) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+
 
 
 
@@ -61,7 +64,8 @@ api.interceptors.response.use(
     const isAuthEndpoint =
       original?.url?.includes("/token/") ||
       original?.url?.includes("/forgot-password") ||
-      original?.url?.includes("/reset-password");
+      original?.url?.includes("/reset-password") ||
+      original?.url?.includes("/logout");
 
     if (status === 401 && original && !original._retry && !isAuthEndpoint) {
       original._retry = true;

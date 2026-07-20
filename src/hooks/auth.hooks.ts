@@ -11,11 +11,24 @@ export function useLogin() {
   return useMutation({
     mutationFn: (payload: LoginPayload) => authApi.login(payload),
     onSuccess: (data) => {
-      setSession({ access: data.access, refresh: data.refresh, user: data.user });
+      setSession({ access: data.access, user: data.user });
       toast.success("Welcome back");
     },
     onError: (err) => toast.error(extractApiError(err, "Login failed")),
   });
+}
+
+export function useLogout() {
+  const logout = useAuthStore((s) => s.logout);
+  return async () => {
+    try {
+      await authApi.logout();     // ✅ Invalidate token on server + clear cookie
+    } catch {
+      // Even if server call fails, clear local state
+    }
+    logout();                     // ✅ Clear in-memory state
+    toast.success('Signed out');
+  };
 }
 
 export function useRegisterPlayer() {
@@ -55,10 +68,3 @@ export function useResetPassword() {
   });
 }
 
-export function useLogout() {
-  const logout = useAuthStore((s) => s.logout);
-  return () => {
-    logout();
-    toast.success("Signed out");
-  };
-}

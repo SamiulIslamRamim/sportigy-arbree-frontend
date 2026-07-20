@@ -6,12 +6,13 @@ export interface AuthUser {
   username: string;
   role: UserRole;
   name?: string | null;
+  categories?: string[] | null;
 }
 
-export interface TokenPair {
-  access: string;
-  refresh: string;
-}
+// export interface TokenPair {
+//   access: string;
+//   refresh: string;
+// }
 
 export interface LoginPayload {
   identifier: string; // email or username
@@ -20,7 +21,6 @@ export interface LoginPayload {
 
 export interface LoginResponse {
   access: string;
-  refresh: string;
   user?: AuthUser;
 }
 
@@ -35,6 +35,7 @@ export interface PlayerRegistrationPayload {
   categories: string[];
   websiteUrl?: string;
   password: string;
+  country: string;
 }
 
 export interface OrganizationRegistrationPayload {

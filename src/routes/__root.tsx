@@ -1,12 +1,12 @@
 import { Link, Outlet, createRootRoute, useRouter } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
 import { QueryClientProvider } from "@tanstack/react-query";
 import '../styles.css'
 import { useEffect } from 'react'
 import { reportCustomError } from '#/lib/error-reporting'
 import useCustomQueryClient from '#/hooks/useQueryClient';
 import { Toaster } from '#/components/ui/sonner';
+import { useAuthStore } from '#/features/auth/store/auth.store';
+import { authApi } from '#/features/auth/api/auth.api';
 
 
 function NotFoundComponent() {
@@ -78,6 +78,21 @@ export const Route = createRootRoute({
 
 
 function RootComponent() {
+    const setSession = useAuthStore((s) => s.setSession);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  useEffect(() => {
+    // Only attempt to restore session if we don't already have one
+    if (!isAuthenticated) {
+      authApi.verifySession()
+        .then((data) => {
+          setSession({ access: data.accessToken, user: data.user });
+        })
+        .catch(() => {
+          // No valid session — user stays logged out
+        });
+    }
+  }, []); 
   return (
     <>
     

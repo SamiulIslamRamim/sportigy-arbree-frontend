@@ -13,13 +13,17 @@ import { cn } from "#/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Building2, Loader2, Trophy } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type{ FieldValues, Path, UseFormReturn} from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
 import { useCategories, useOrgCategories } from "#/hooks/categories.hooks";
 import { MultiSelect } from "#/components/multi-select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/components/ui/select";
+import { COUNTRY_LIST, getCountryCode, getDynamicPrefix, validatePhoneNumber } from "#/features/player/utils/country";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 export const Route = createFileRoute("/register")({
   head: () => ({ meta: [{ title: "Create account — Spotig" }] }),
@@ -48,6 +52,8 @@ type PlayerS3 = z.infer<typeof playerSection3>;
 type OrgS1 = z.infer<typeof orgSection1>;
 type OrgS2 = z.infer<typeof orgSection2>;
 type OrgS3 = z.infer<typeof orgSection3>;
+
+
 
 function RegisterPage() {
   const [role, setRole] = useState<UserRole>("player");
@@ -154,14 +160,39 @@ function PlayerStep1({
 }) {
   const form = useForm<PlayerS1>({
     resolver: zodResolver(playerSection1),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: defaults ?? {
       name: "",
       email: "",
       birthday: "",
-      contactNo: "",
       username: "",
+      contactNo: "",
+      country: "",
     },
   });
+
+    const country = form.watch("country");
+
+  useEffect(() => {
+    if (!country) return;
+    const code = getCountryCode(country);
+    const prefix = getDynamicPrefix(code);
+    if (!prefix) return;
+
+    const current = form.getValues("contactNo") || "";
+    const national = current.replace(/^\+\d+/, ""); // strip any previous prefix, keep digits typed
+    const alreadyInteracted =
+      form.formState.touchedFields.contactNo || form.formState.isSubmitted;
+
+    form.setValue("contactNo", `${prefix}${national}`, {
+      shouldValidate: alreadyInteracted,
+      shouldTouch: false,
+      shouldDirty: false,
+    });
+  }, [country]);
+
+
   return (
     
       <form onSubmit={form.handleSubmit(onNext)} className="space-y-4">
@@ -169,8 +200,76 @@ function PlayerStep1({
         <TextField form={form} name="name" label="Full name" placeholder="Jordan Ali" />
         <TextField form={form} name="email" label="Email" type="email" />
         <TextField form={form} name="birthday" label="Date of birth" type="date" />
-        <TextField form={form} name="contactNo" label="Phone" placeholder="+1 555 0000" />
+        
+
+        
         <TextField form={form} name="username" label="Username" placeholder="jordan_a" />
+        {/* <TextField form={form} name="country" label="Country Name" placeholder="Africa" /> */}
+
+  
+        
+
+        <Controller
+              name="country"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Country Name</FieldLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger aria-invalid={fieldState.invalid}>
+                      <SelectValue placeholder="Select country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COUNTRY_LIST.map((country) => (
+                        <SelectItem key={country.label} value={country.value}>
+                          {country.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+          name="contactNo"
+          control={form.control}
+          render={({ field, fieldState }) => {
+            const code = getCountryCode(country);
+            const prefix = getDynamicPrefix(code) || "+";
+            const national = field.value?.startsWith(prefix)
+              ? field.value.slice(prefix.length)
+              : field.value ?? "";
+
+            return (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel>Phone</FieldLabel>
+                <div className="flex gap-2">
+                  <span className="flex items-center px-3 rounded-md border bg-muted text-muted-foreground select-none">
+                    {prefix}
+                  </span>
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    className="flex-1 rounded-md border px-3 py-2"
+                    placeholder="1812345678"
+                    value={national}
+                    aria-invalid={fieldState.invalid}
+                    onChange={(e) => {
+                      // keep only digits for the national part
+                      const digits = e.target.value.replace(/\D/g, "");
+                      field.onChange(digits ? `${prefix}${digits}` : "");
+                    }}
+                    onBlur={field.onBlur}
+                  />
+                </div>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            );
+          }}
+        />
         </FieldGroup>
         <NextButton />
       </form>

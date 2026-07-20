@@ -36,8 +36,8 @@ export function PlayerSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const logout = useLogout();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate({ to: "/login" });
   };
 
