@@ -58,7 +58,7 @@ export interface ForgotPasswordPayload {
 export interface ResetPasswordPayload {
   email: string;
   otp: string;
-  password: string;
+  newPassword: string;
 }
 
 export interface VerifyOtpPayload {

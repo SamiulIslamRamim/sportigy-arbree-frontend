@@ -29,12 +29,12 @@ function ResetPasswordPage() {
 
   const form = useForm<ResetPasswordValues>({
     resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { email, otp: "", password: "", confirmPassword: "" },
+    defaultValues: { email, otp: "", newPassword: "", confirmPassword: "" },
   });
 
   const onSubmit = (values: ResetPasswordValues) => {
     reset.mutate(
-      { email: values.email, otp: values.otp, password: values.password },
+      { email: values.email, otp: values.otp, newPassword: values.newPassword },
       {
         onSuccess: () => {
           toast.success("Password updated. Please sign in.");
@@ -102,7 +102,7 @@ function ResetPasswordPage() {
     />
 
     <Controller
-      name="password"
+      name="newPassword"
       control={form.control}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>

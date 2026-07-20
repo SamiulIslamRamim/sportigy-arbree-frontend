@@ -30,10 +30,10 @@ export const resetPasswordSchema = z
   .object({
     email: z.string().email(),
     otp: z.string().length(6, 'Enter the 6-digit code'),
-    password: strongPassword,
+    newPassword: strongPassword,
     confirmPassword: z.string(),
   })
-  .refine((d) => d.password === d.confirmPassword, {
+  .refine((d) => d.newPassword === d.confirmPassword, {
     path: ['confirmPassword'],
     message: 'Passwords do not match',
   })
@@ -42,7 +42,7 @@ export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>
 /* ---------- Player Registration ---------- */
 export const playerSection1 = z.object({
   name: z.string().trim().min(2, 'Full name is required').max(100),
-  country: z.string().trim().min(2, 'Full name is required').max(100),
+  country: z.string().trim().min(2, 'Country name is required').max(100),
   email: z.string().trim().email('Invalid email'),
   birthday: z.string().min(1, 'Date of birth is required'),
   contactNo: z.string().trim().min(6, 'Phone is required').max(20),
@@ -104,27 +104,46 @@ export type PlayerValues = z.infer<typeof playerSchema>
 export const orgSection1 = z.object({
   name: z.string().trim().min(2, 'Organization name is required').max(120),
   email: z.string().trim().email('Invalid email'),
-  contactNo: z.string().trim().min(6, 'Phone is required').max(20),
   username: z
-    .string()
-    .trim()
+  .string()
+  .trim()
     .min(3)
     .max(30)
     .regex(/^[a-zA-Z0-9_]+$/, 'Letters, numbers, underscore only'),
-  categories: z.array(z.string()).min(1, 'Select an organization type'),
+    categories: z.array(z.string()).min(1, 'Select an organization type'),
   websiteUrl: z
     .string()
     .trim()
     .url('Invalid URL')
     .optional()
     .or(z.literal('').transform(() => undefined)),
-})
+  })
 
 export const orgSection2 = z.object({
   city: z.string().trim().min(1, 'City is required'),
   state: z.string().trim().min(1, 'State is required'),
   country: z.string().trim().min(1, 'Country is required'),
-})
+  contactNo: z.string().trim().min(6, 'Phone is required').max(20),
+}).superRefine((data, ctx) => {
+    const code = getCountryCode(data.country);
+
+    if (!code) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Select a valid country",
+        path: ["country"],
+      });
+      return;
+    }
+
+    if (!validatePhoneNumber(code, data.contactNo)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid phone number for selected country",
+        path: ["contactNo"],
+      });
+    }
+  })
 
 export const orgSection3 = z
   .object({
