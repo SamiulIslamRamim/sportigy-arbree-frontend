@@ -7,6 +7,7 @@ const strongPassword = z
   .regex(/[A-Z]/, 'Needs an uppercase letter')
   .regex(/[a-z]/, 'Needs a lowercase letter')
   .regex(/[0-9]/, 'Needs a number')
+  .regex(/[^a-zA-Z0-9]/, 'Needs a special character');
 
 export const loginSchema = z.object({
   identifier: z.string().trim().min(1, 'Email or username is required'),

@@ -25,7 +25,7 @@ import { useRegisterOrganization, useRegisterPlayer } from '#/hooks/auth.hooks'
 import { cn } from '#/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft, ArrowRight, Building2, Loader2, Trophy } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Building2, Check, Loader2, Trophy, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import type { FieldValues, Path, UseFormReturn } from 'react-hook-form'
@@ -380,6 +380,16 @@ function PlayerStep2({
   )
 }
 
+
+const PASSWORD_RULES = [
+  { id: "min", label: "At least 8 characters", test: (p: string) => p.length >= 8 },
+  { id: "upper", label: "Needs an uppercase letter", test: (p: string) => /[A-Z]/.test(p) },
+  { id: "lower", label: "Needs a lowercase letter", test: (p: string) => /[a-z]/.test(p) },
+  { id: "number", label: "Needs a number", test: (p: string) => /[0-9]/.test(p) },
+  { id: "special", label: "Needs a special character", test: (p: string) => /[^a-zA-Z0-9]/.test(p) },
+];
+
+
 function PlayerStep3({
   isPending,
   onBack,
@@ -391,11 +401,35 @@ function PlayerStep3({
 }) {
   const form = useForm<PlayerS3>({
     resolver: zodResolver(playerSection3),
+    mode: "onChange",
     defaultValues: { password: '', confirmPassword: '' },
-  })
+  });
+
+  const password = form.watch("password") || "";
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <PasswordField form={form} name="password" label="Password" />
+      {/* 3. Dynamic Password Checklist */}
+      <ul className="space-y-1.5 text-sm font-medium pl-1">
+        {PASSWORD_RULES.map((rule) => {
+          const isPassed = rule.test(password);
+          return (
+            <li
+              key={rule.id}
+              className={`flex items-center gap-1.5 transition-colors duration-200 ${
+                isPassed ? "text-muted-foreground dark:text-emerald-400" : "text-destructive"
+              }`}
+            >
+              {isPassed ? (
+                <Check className="h-3.5 w-3.5 text-muted-foreground dark:text-emerald-400" />
+              ) : (
+                <X className="h-3.5 w-3.5 text-destructive" />
+              )}
+              <span>{rule.label}</span>
+            </li>
+          );
+        })}
+      </ul>
       <PasswordField
         form={form}
         name="confirmPassword"
@@ -638,11 +672,34 @@ function OrgStep3({
 }) {
   const form = useForm<OrgS3>({
     resolver: zodResolver(orgSection3),
+    mode: "onChange",
     defaultValues: { password: '', confirmPassword: '' },
   })
+  const password = form.watch("password") || "";
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <PasswordField form={form} name="password" label="Password" />
+      {/* 3. Dynamic Password Checklist */}
+      <ul className="space-y-1.5 text-sm font-medium pl-1">
+        {PASSWORD_RULES.map((rule) => {
+          const isPassed = rule.test(password);
+          return (
+            <li
+              key={rule.id}
+              className={`flex items-center gap-1.5 transition-colors duration-200 ${
+                isPassed ? "text-muted-foreground " : "text-destructive"
+              }`}
+            >
+              {isPassed ? (
+                <Check className="h-3.5 w-3.5 text-muted-foreground " />
+              ) : (
+                <X className="h-3.5 w-3.5 text-destructive" />
+              )}
+              <span>{rule.label}</span>
+            </li>
+          );
+        })}
+      </ul>
       <PasswordField
         form={form}
         name="confirmPassword"
@@ -721,7 +778,7 @@ function PasswordField<T extends FieldValues>({
             aria-invalid={fieldState.invalid}
             autoComplete="new-password"
           />
-          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          {/* {fieldState.invalid && <FieldError errors={[fieldState.error]} />} */}
         </Field>
       )}
     />
