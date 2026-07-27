@@ -1,4 +1,4 @@
-export type UserRole = "player" | "organization";
+export type UserRole = "player" | "organization" | "admin";
 
 export interface AuthUser {
   id: string;
@@ -64,4 +64,20 @@ export interface ResetPasswordPayload {
 export interface VerifyOtpPayload {
   email: string;
   otp: string;
+}
+
+
+export interface AdminLoginPayload {
+  username: string;
+  password: string;
+}
+
+
+
+
+
+export interface AdminLoginResponse {
+  access: string;
+  refresh?: string;
+  admin?: AuthUser;
 }
