@@ -22,8 +22,8 @@ export const Route = createFileRoute("/login")({
     const {isAuthenticated, user} = useAuthStore.getState();
     if(isAuthenticated){
       throw redirect({
-        to: search.redirect ?? (user?.role === "player" ? "/player/dashboard" : "/dashboard")
-      })
+    to: search.redirect ?? (user?.role === "player" ? "/player/dashboard" : user?.role === "organization" ? "/org/dashboard" : "/dashboard")
+  });
     }
   },
   head: () => ({ meta: [{ title: "Sign in — Spotig" }] }),
@@ -45,8 +45,10 @@ function LoginPage() {
     login.mutate(
       { identifier: values.identifier, password: values.password },
       { onSuccess: (data) => navigate({ to: redirectTo ?? (data.user?.role === "player"
-              ? "/player/dashboard"
-              : "/dashboard"), }) },
+        ? "/player/dashboard"
+        : data.user?.role === "organization"
+          ? "/org/dashboard"
+          : "/dashboard"), }) },
     );
   };
 

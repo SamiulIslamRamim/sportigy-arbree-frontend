@@ -18,6 +18,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedPlayerDashboardRouteImport } from './routes/_authenticated/player/dashboard'
+import { Route as AuthenticatedOrgDashboardRouteImport } from './routes/_authenticated/org/dashboard'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -64,6 +65,12 @@ const AuthenticatedPlayerDashboardRoute =
     path: '/player/dashboard',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedOrgDashboardRoute =
+  AuthenticatedOrgDashboardRouteImport.update({
+    id: '/org/dashboard',
+    path: '/org/dashboard',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
 }
 export interface FileRoutesByTo {
@@ -83,6 +91,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
 }
 export interface FileRoutesById {
@@ -95,6 +104,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/org/dashboard': typeof AuthenticatedOrgDashboardRoute
   '/_authenticated/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
 }
 export interface FileRouteTypes {
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify-otp'
     | '/dashboard'
+    | '/org/dashboard'
     | '/player/dashboard'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify-otp'
     | '/dashboard'
+    | '/org/dashboard'
     | '/player/dashboard'
   id:
     | '__root__'
@@ -128,6 +140,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify-otp'
     | '/_authenticated/dashboard'
+    | '/_authenticated/org/dashboard'
     | '/_authenticated/player/dashboard'
   fileRoutesById: FileRoutesById
 }
@@ -206,16 +219,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPlayerDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/org/dashboard': {
+      id: '/_authenticated/org/dashboard'
+      path: '/org/dashboard'
+      fullPath: '/org/dashboard'
+      preLoaderRoute: typeof AuthenticatedOrgDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedOrgDashboardRoute: typeof AuthenticatedOrgDashboardRoute
   AuthenticatedPlayerDashboardRoute: typeof AuthenticatedPlayerDashboardRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedOrgDashboardRoute: AuthenticatedOrgDashboardRoute,
   AuthenticatedPlayerDashboardRoute: AuthenticatedPlayerDashboardRoute,
 }
 
