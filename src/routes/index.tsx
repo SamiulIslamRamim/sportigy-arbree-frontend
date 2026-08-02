@@ -19,7 +19,11 @@ export const Route = createFileRoute('/')({
 
     if (isAuthenticated) {
       throw redirect({
-        to: user?.role === 'player' ? '/player/dashboard' : '/dashboard',
+        to: user?.role === 'player'
+          ? '/player/dashboard'
+          : user?.role === 'organization'
+            ? '/org/dashboard'
+            : '/dashboard',
       })
     }
   },

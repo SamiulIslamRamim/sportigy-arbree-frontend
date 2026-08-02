@@ -16,7 +16,10 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminAuthedRouteImport } from './routes/admin/_authed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
 import { Route as AuthenticatedPlayerDashboardRouteImport } from './routes/_authenticated/player/dashboard'
 import { Route as AuthenticatedOrgDashboardRouteImport } from './routes/_authenticated/org/dashboard'
 
@@ -54,10 +57,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAuthedRoute = AdminAuthedRouteImport.update({
+  id: '/admin/_authed',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AdminAuthedDashboardRoute = AdminAuthedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminAuthedRoute,
 } as any)
 const AuthenticatedPlayerDashboardRoute =
   AuthenticatedPlayerDashboardRouteImport.update({
@@ -80,8 +98,11 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/admin': typeof AdminAuthedRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
+  '/admin/dashboard': typeof AdminAuthedDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,8 +112,11 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/admin': typeof AdminAuthedRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
+  '/admin/dashboard': typeof AdminAuthedDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,8 +128,11 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/admin/_authed': typeof AdminAuthedRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/_authenticated/org/dashboard': typeof AuthenticatedOrgDashboardRoute
   '/_authenticated/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
+  '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,8 +144,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify-otp'
     | '/dashboard'
+    | '/admin'
+    | '/admin/login'
     | '/org/dashboard'
     | '/player/dashboard'
+    | '/admin/dashboard'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -128,8 +158,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify-otp'
     | '/dashboard'
+    | '/admin'
+    | '/admin/login'
     | '/org/dashboard'
     | '/player/dashboard'
+    | '/admin/dashboard'
   id:
     | '__root__'
     | '/'
@@ -140,8 +173,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify-otp'
     | '/_authenticated/dashboard'
+    | '/admin/_authed'
+    | '/admin/login'
     | '/_authenticated/org/dashboard'
     | '/_authenticated/player/dashboard'
+    | '/admin/_authed/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,6 +188,8 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
+  AdminAuthedRoute: typeof AdminAuthedRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -205,12 +243,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/_authed': {
+      id: '/admin/_authed'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminAuthedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/admin/_authed/dashboard': {
+      id: '/admin/_authed/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminAuthedDashboardRouteImport
+      parentRoute: typeof AdminAuthedRoute
     }
     '/_authenticated/player/dashboard': {
       id: '/_authenticated/player/dashboard'
@@ -245,6 +304,18 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface AdminAuthedRouteChildren {
+  AdminAuthedDashboardRoute: typeof AdminAuthedDashboardRoute
+}
+
+const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
+  AdminAuthedDashboardRoute: AdminAuthedDashboardRoute,
+}
+
+const AdminAuthedRouteWithChildren = AdminAuthedRoute._addFileChildren(
+  AdminAuthedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
@@ -253,6 +324,8 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   VerifyOtpRoute: VerifyOtpRoute,
+  AdminAuthedRoute: AdminAuthedRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
