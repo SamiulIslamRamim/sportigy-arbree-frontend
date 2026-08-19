@@ -1,14 +1,24 @@
-import { mockCareer } from "#/mock/career";
-import { mockDashboard } from "#/mock/dashboard";
-import { mockRecentMatches, mockUpcomingMatch } from "#/mock/matches";
-import type { CareerStatistics, DashboardResponse, RecentMatch, UpcomingMatch } from "../types";
+import type { DashboardData } from "../types";
+import { basicProfileApi } from "./basicProfile.api";
+import { careerStatsApi } from "./careerStats.api";
+import { playerMatchApi } from "./match.api";
 
-const delay = <T>(data: T, ms = 250): Promise<T> =>
-  new Promise((resolve) => setTimeout(() => resolve(data), ms));
 
 export const dashboardApi = {
-  getDashboard: (): Promise<DashboardResponse> => delay(mockDashboard),
-  getCareer: (): Promise<CareerStatistics> => delay(mockCareer),
-  getRecentMatches: (): Promise<RecentMatch[]> => delay(mockRecentMatches),
-  getUpcomingMatch: (): Promise<UpcomingMatch> => delay(mockUpcomingMatch),
+  getDashboard: async (sportId: string): Promise<DashboardData> => {
+    const [profile, career, approved] = await Promise.all([
+      basicProfileApi.get(),
+      careerStatsApi.getCareerStats(sportId),
+      playerMatchApi.listApproved(),
+    ]);
+    const matches = approved.matches.filter((m) => m.sportId === sportId);
+    const today = new Date().toISOString();
+    return {
+      profile,
+      career,
+      recentMatches: matches.slice(0, 5),
+      upcomingMatch: matches.find((m) => m.matchDate >= today) ?? null,
+      latestResults: matches.filter((m) => m.result && m.result !== "NO_RESULT").slice(0, 5),
+    };
+  },
 };

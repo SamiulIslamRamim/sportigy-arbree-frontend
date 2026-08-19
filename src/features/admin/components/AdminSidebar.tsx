@@ -1,4 +1,4 @@
-import { Briefcase, CreditCard, FileBarChart, FileEdit, FolderPlus, LayoutDashboard, Loader2, LogOut, Settings, Shield, Users, Zap } from "lucide-react";
+import { Briefcase, CreditCard, FileBarChart, FileEdit, FolderPlus, LayoutDashboard, Loader2, LogOut, Settings, Shield, Users } from "lucide-react";
 import { useAdminLogout } from "../hooks/useAdminLogout";
 import { cn } from "#/lib/utils";
 import spotigy from '/f65d113906e0f6c5861d515830c6c6f3a4622fdf.png'

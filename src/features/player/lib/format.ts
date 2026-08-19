@@ -1,19 +1,10 @@
-import type { CricketFormat, MatchResult } from "../types";
-
-
-export const formatLabels: Record<CricketFormat, string> = {
-  TEST: "Test",
-  ODI: "ODI",
-  T20I: "T20I",
-  LIST_A: "List A",
-  FIRST_CLASS: "First Class",
-  T20: "T20",
-};
+import type { MatchResult } from "../types";
 
 export const resultLabels: Record<MatchResult, string> = {
   WIN: "Win",
   LOSS: "Loss",
   DRAW: "Draw",
+  TIE: "Tie",
   NO_RESULT: "No result",
 };
 
@@ -21,6 +12,7 @@ export const resultTone: Record<MatchResult, string> = {
   WIN: "bg-emerald-100 text-emerald-700 border-emerald-200",
   LOSS: "bg-rose-100 text-rose-700 border-rose-200",
   DRAW: "bg-amber-100 text-amber-700 border-amber-200",
+  TIE: "bg-sky-100 text-sky-700 border-sky-200",
   NO_RESULT: "bg-muted text-muted-foreground border-border",
 };
 
@@ -43,4 +35,9 @@ export function countdown(toIso: string, fromDate = new Date()): string {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
   return `${days}d ${hours}h later`;
+}
+
+export function dash(value: string | number | null | undefined) {
+  if (value === null || value === undefined || value === "") return "—";
+  return String(value);
 }

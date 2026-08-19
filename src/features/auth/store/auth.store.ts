@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
 import type { AuthUser } from '../types/auth.types'
 
 interface AuthState {

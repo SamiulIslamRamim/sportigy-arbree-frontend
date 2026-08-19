@@ -78,7 +78,7 @@ export const playerSection2 = z.object({
   height: z.string().trim().min(1, 'Height is required'),
   weight: z.string().trim().min(1, 'Weight is required'),
   categories: z.array(z.string()).min(1, 'Select at least one category'),
-  websiteUrl: z
+  website_url: z
     .string()
     .trim()
     .url('Invalid URL')
@@ -112,7 +112,7 @@ export const orgSection1 = z.object({
     .max(30)
     .regex(/^[a-zA-Z0-9_]+$/, 'Letters, numbers, underscore only'),
     categories: z.array(z.string()).min(1, 'Select an organization type'),
-  websiteUrl: z
+  website_url: z
     .string()
     .trim()
     .url('Invalid URL')

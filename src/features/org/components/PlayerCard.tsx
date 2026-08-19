@@ -1,4 +1,4 @@
-import { Heart, Link, Star } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import type { PlayerCardT } from "../types";
 import { countryFlagEmoji } from "../utils/flag";
 

@@ -1,6 +1,6 @@
 import type { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
-import type { AdminLoginPayload, AdminLoginResponse, AdminRefreshResponse, AdminVerifyResponse } from "../types/admin-auth.types";
+import type { AdminLoginPayload, AdminLoginResponse, AdminVerifyResponse } from "../types/admin-auth.types";
 import { useAdminAuthStore } from "../auth/admin-auth.store";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000";
@@ -15,12 +15,12 @@ let refreshPromise: Promise<string | null> | null = null;
 
 async function refreshAdminAccessToken(): Promise<string | null> {
   try {
-    const res = await axios.post<AdminRefreshResponse>(
+    const res = await axios.post<{ data: { accessToken: string } }>(
       `${BASE_URL}/admin/token/refresh/`,
       {},
       { withCredentials: true },
     );
-    const token = res.data.accessToken;
+    const token = res.data.data.accessToken;
     useAdminAuthStore.getState().setAccessToken(token);
     return token;
   } catch {
@@ -42,7 +42,15 @@ adminApi.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 });
 
 adminApi.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    const body = res.data as
+      | { success?: boolean; data?: unknown; message?: string; error_code?: string }
+      | undefined;
+    if (body && typeof body === "object" && "success" in body && "data" in body) {
+      res.data = body.data;
+    }
+    return res;
+  },
   async (error: AxiosError) => {
     const original = error.config as
       | (InternalAxiosRequestConfig & { _retry?: boolean })
@@ -50,7 +58,7 @@ adminApi.interceptors.response.use(
     const status = error.response?.status;
     const isAuthEndpoint =
       original?.url?.includes("/admin/token/refresh") ||
-      original?.url?.includes("/admin/token/logout");
+      original?.url?.includes("/admin/logout");
 
     if (status === 401 && original && !original._retry && !isAuthEndpoint) {
       original._retry = true;
@@ -77,7 +85,7 @@ export const adminAuthApi = {
     return res.data;
   },
   logout: async () => {
-    const res = await adminApi.post<{ message: string }>("/admin/token/logout/");
+    const res = await adminApi.post<{ message: string }>("/admin/logout/");
     return res.data;
   },
 };

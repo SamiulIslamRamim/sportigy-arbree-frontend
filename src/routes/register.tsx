@@ -44,9 +44,7 @@ import {
   COUNTRY_LIST,
   getCountryCode,
   getDynamicPrefix,
-  validatePhoneNumber,
 } from '#/features/player/utils/country'
-import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 
 export const Route = createFileRoute('/register')({
@@ -323,7 +321,7 @@ function PlayerStep2({
       height: '',
       weight: '',
       categories: [],
-      websiteUrl: '',
+      website_url: '',
     },
   })
   const { data: categoryOptions = [], isLoading } = useCategories()
@@ -368,7 +366,7 @@ function PlayerStep2({
 
         <TextField
           form={form}
-          name="websiteUrl"
+          name="website_url"
           label="Portfolio link"
           placeholder="https://"
           description="Optional"
@@ -507,7 +505,7 @@ function OrgStep1({
       email: '',
       username: '',
       categories: [],
-      websiteUrl: '',
+      website_url: '',
     },
   })
   const { data: categoryOptions = [], isLoading } = useOrgCategories()
@@ -541,7 +539,7 @@ function OrgStep1({
 
         <TextField
           form={form}
-          name="websiteUrl"
+          name="website_url"
           label="Portfolio link"
           description="Optional"
         />

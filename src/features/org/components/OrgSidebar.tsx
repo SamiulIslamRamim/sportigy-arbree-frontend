@@ -2,7 +2,7 @@ import { useLogout } from "#/hooks/auth.hooks";
 import { cn } from "#/lib/utils";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
-import { ClipboardList, LayoutDashboard, LogOut, Search, Settings, Star, Trophy, User, UserPlus, Zap } from "lucide-react";
+import { ClipboardList, LayoutDashboard, LogOut, Search, Settings, Star, Trophy, User, UserPlus } from "lucide-react";
 import spotigy from '/f65d113906e0f6c5861d515830c6c6f3a4622fdf.png'
 
 const items = [

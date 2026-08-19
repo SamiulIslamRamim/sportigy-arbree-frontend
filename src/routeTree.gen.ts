@@ -19,9 +19,22 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminAuthedRouteImport } from './routes/admin/_authed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AdminAuthedSportsRouteImport } from './routes/admin/_authed/sports'
+import { Route as AdminAuthedMatchesRouteImport } from './routes/admin/_authed/matches'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
+import { Route as AuthenticatedPlayerUploadRouteImport } from './routes/_authenticated/player/upload'
+import { Route as AuthenticatedPlayerTransactionsRouteImport } from './routes/_authenticated/player/transactions'
+import { Route as AuthenticatedPlayerTeamsRouteImport } from './routes/_authenticated/player/teams'
+import { Route as AuthenticatedPlayerSettingsRouteImport } from './routes/_authenticated/player/settings'
+import { Route as AuthenticatedPlayerReviewsRouteImport } from './routes/_authenticated/player/reviews'
+import { Route as AuthenticatedPlayerReportsRouteImport } from './routes/_authenticated/player/reports'
+import { Route as AuthenticatedPlayerProfileRouteImport } from './routes/_authenticated/player/profile'
+import { Route as AuthenticatedPlayerMatchesRouteImport } from './routes/_authenticated/player/matches'
 import { Route as AuthenticatedPlayerDashboardRouteImport } from './routes/_authenticated/player/dashboard'
+import { Route as AuthenticatedPlayerCareerRouteImport } from './routes/_authenticated/player/career'
 import { Route as AuthenticatedOrgDashboardRouteImport } from './routes/_authenticated/org/dashboard'
+import { Route as AdminAuthedSportsSportIdRouteImport } from './routes/admin/_authed/sports.$sportId'
+import { Route as AdminAuthedMatchesMatchIdRouteImport } from './routes/admin/_authed/matches.$matchId'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -72,15 +85,79 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AdminAuthedSportsRoute = AdminAuthedSportsRouteImport.update({
+  id: '/sports',
+  path: '/sports',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
+const AdminAuthedMatchesRoute = AdminAuthedMatchesRouteImport.update({
+  id: '/matches',
+  path: '/matches',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
 const AdminAuthedDashboardRoute = AdminAuthedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
+const AuthenticatedPlayerUploadRoute =
+  AuthenticatedPlayerUploadRouteImport.update({
+    id: '/player/upload',
+    path: '/player/upload',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPlayerTransactionsRoute =
+  AuthenticatedPlayerTransactionsRouteImport.update({
+    id: '/player/transactions',
+    path: '/player/transactions',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPlayerTeamsRoute =
+  AuthenticatedPlayerTeamsRouteImport.update({
+    id: '/player/teams',
+    path: '/player/teams',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPlayerSettingsRoute =
+  AuthenticatedPlayerSettingsRouteImport.update({
+    id: '/player/settings',
+    path: '/player/settings',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPlayerReviewsRoute =
+  AuthenticatedPlayerReviewsRouteImport.update({
+    id: '/player/reviews',
+    path: '/player/reviews',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPlayerReportsRoute =
+  AuthenticatedPlayerReportsRouteImport.update({
+    id: '/player/reports',
+    path: '/player/reports',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPlayerProfileRoute =
+  AuthenticatedPlayerProfileRouteImport.update({
+    id: '/player/profile',
+    path: '/player/profile',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPlayerMatchesRoute =
+  AuthenticatedPlayerMatchesRouteImport.update({
+    id: '/player/matches',
+    path: '/player/matches',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPlayerDashboardRoute =
   AuthenticatedPlayerDashboardRouteImport.update({
     id: '/player/dashboard',
     path: '/player/dashboard',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPlayerCareerRoute =
+  AuthenticatedPlayerCareerRouteImport.update({
+    id: '/player/career',
+    path: '/player/career',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedOrgDashboardRoute =
@@ -88,6 +165,18 @@ const AuthenticatedOrgDashboardRoute =
     id: '/org/dashboard',
     path: '/org/dashboard',
     getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AdminAuthedSportsSportIdRoute =
+  AdminAuthedSportsSportIdRouteImport.update({
+    id: '/$sportId',
+    path: '/$sportId',
+    getParentRoute: () => AdminAuthedSportsRoute,
+  } as any)
+const AdminAuthedMatchesMatchIdRoute =
+  AdminAuthedMatchesMatchIdRouteImport.update({
+    id: '/$matchId',
+    path: '/$matchId',
+    getParentRoute: () => AdminAuthedMatchesRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -101,8 +190,21 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
+  '/player/career': typeof AuthenticatedPlayerCareerRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
+  '/player/matches': typeof AuthenticatedPlayerMatchesRoute
+  '/player/profile': typeof AuthenticatedPlayerProfileRoute
+  '/player/reports': typeof AuthenticatedPlayerReportsRoute
+  '/player/reviews': typeof AuthenticatedPlayerReviewsRoute
+  '/player/settings': typeof AuthenticatedPlayerSettingsRoute
+  '/player/teams': typeof AuthenticatedPlayerTeamsRoute
+  '/player/transactions': typeof AuthenticatedPlayerTransactionsRoute
+  '/player/upload': typeof AuthenticatedPlayerUploadRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
+  '/admin/matches': typeof AdminAuthedMatchesRouteWithChildren
+  '/admin/sports': typeof AdminAuthedSportsRouteWithChildren
+  '/admin/matches/$matchId': typeof AdminAuthedMatchesMatchIdRoute
+  '/admin/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -115,8 +217,21 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
+  '/player/career': typeof AuthenticatedPlayerCareerRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
+  '/player/matches': typeof AuthenticatedPlayerMatchesRoute
+  '/player/profile': typeof AuthenticatedPlayerProfileRoute
+  '/player/reports': typeof AuthenticatedPlayerReportsRoute
+  '/player/reviews': typeof AuthenticatedPlayerReviewsRoute
+  '/player/settings': typeof AuthenticatedPlayerSettingsRoute
+  '/player/teams': typeof AuthenticatedPlayerTeamsRoute
+  '/player/transactions': typeof AuthenticatedPlayerTransactionsRoute
+  '/player/upload': typeof AuthenticatedPlayerUploadRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
+  '/admin/matches': typeof AdminAuthedMatchesRouteWithChildren
+  '/admin/sports': typeof AdminAuthedSportsRouteWithChildren
+  '/admin/matches/$matchId': typeof AdminAuthedMatchesMatchIdRoute
+  '/admin/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -131,8 +246,21 @@ export interface FileRoutesById {
   '/admin/_authed': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/_authenticated/org/dashboard': typeof AuthenticatedOrgDashboardRoute
+  '/_authenticated/player/career': typeof AuthenticatedPlayerCareerRoute
   '/_authenticated/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
+  '/_authenticated/player/matches': typeof AuthenticatedPlayerMatchesRoute
+  '/_authenticated/player/profile': typeof AuthenticatedPlayerProfileRoute
+  '/_authenticated/player/reports': typeof AuthenticatedPlayerReportsRoute
+  '/_authenticated/player/reviews': typeof AuthenticatedPlayerReviewsRoute
+  '/_authenticated/player/settings': typeof AuthenticatedPlayerSettingsRoute
+  '/_authenticated/player/teams': typeof AuthenticatedPlayerTeamsRoute
+  '/_authenticated/player/transactions': typeof AuthenticatedPlayerTransactionsRoute
+  '/_authenticated/player/upload': typeof AuthenticatedPlayerUploadRoute
   '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
+  '/admin/_authed/matches': typeof AdminAuthedMatchesRouteWithChildren
+  '/admin/_authed/sports': typeof AdminAuthedSportsRouteWithChildren
+  '/admin/_authed/matches/$matchId': typeof AdminAuthedMatchesMatchIdRoute
+  '/admin/_authed/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -147,8 +275,21 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/login'
     | '/org/dashboard'
+    | '/player/career'
     | '/player/dashboard'
+    | '/player/matches'
+    | '/player/profile'
+    | '/player/reports'
+    | '/player/reviews'
+    | '/player/settings'
+    | '/player/teams'
+    | '/player/transactions'
+    | '/player/upload'
     | '/admin/dashboard'
+    | '/admin/matches'
+    | '/admin/sports'
+    | '/admin/matches/$matchId'
+    | '/admin/sports/$sportId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -161,8 +302,21 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/login'
     | '/org/dashboard'
+    | '/player/career'
     | '/player/dashboard'
+    | '/player/matches'
+    | '/player/profile'
+    | '/player/reports'
+    | '/player/reviews'
+    | '/player/settings'
+    | '/player/teams'
+    | '/player/transactions'
+    | '/player/upload'
     | '/admin/dashboard'
+    | '/admin/matches'
+    | '/admin/sports'
+    | '/admin/matches/$matchId'
+    | '/admin/sports/$sportId'
   id:
     | '__root__'
     | '/'
@@ -176,8 +330,21 @@ export interface FileRouteTypes {
     | '/admin/_authed'
     | '/admin/login'
     | '/_authenticated/org/dashboard'
+    | '/_authenticated/player/career'
     | '/_authenticated/player/dashboard'
+    | '/_authenticated/player/matches'
+    | '/_authenticated/player/profile'
+    | '/_authenticated/player/reports'
+    | '/_authenticated/player/reviews'
+    | '/_authenticated/player/settings'
+    | '/_authenticated/player/teams'
+    | '/_authenticated/player/transactions'
+    | '/_authenticated/player/upload'
     | '/admin/_authed/dashboard'
+    | '/admin/_authed/matches'
+    | '/admin/_authed/sports'
+    | '/admin/_authed/matches/$matchId'
+    | '/admin/_authed/sports/$sportId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -264,6 +431,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/admin/_authed/sports': {
+      id: '/admin/_authed/sports'
+      path: '/sports'
+      fullPath: '/admin/sports'
+      preLoaderRoute: typeof AdminAuthedSportsRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
+    '/admin/_authed/matches': {
+      id: '/admin/_authed/matches'
+      path: '/matches'
+      fullPath: '/admin/matches'
+      preLoaderRoute: typeof AdminAuthedMatchesRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
     '/admin/_authed/dashboard': {
       id: '/admin/_authed/dashboard'
       path: '/dashboard'
@@ -271,11 +452,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedDashboardRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
+    '/_authenticated/player/upload': {
+      id: '/_authenticated/player/upload'
+      path: '/player/upload'
+      fullPath: '/player/upload'
+      preLoaderRoute: typeof AuthenticatedPlayerUploadRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/player/transactions': {
+      id: '/_authenticated/player/transactions'
+      path: '/player/transactions'
+      fullPath: '/player/transactions'
+      preLoaderRoute: typeof AuthenticatedPlayerTransactionsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/player/teams': {
+      id: '/_authenticated/player/teams'
+      path: '/player/teams'
+      fullPath: '/player/teams'
+      preLoaderRoute: typeof AuthenticatedPlayerTeamsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/player/settings': {
+      id: '/_authenticated/player/settings'
+      path: '/player/settings'
+      fullPath: '/player/settings'
+      preLoaderRoute: typeof AuthenticatedPlayerSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/player/reviews': {
+      id: '/_authenticated/player/reviews'
+      path: '/player/reviews'
+      fullPath: '/player/reviews'
+      preLoaderRoute: typeof AuthenticatedPlayerReviewsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/player/reports': {
+      id: '/_authenticated/player/reports'
+      path: '/player/reports'
+      fullPath: '/player/reports'
+      preLoaderRoute: typeof AuthenticatedPlayerReportsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/player/profile': {
+      id: '/_authenticated/player/profile'
+      path: '/player/profile'
+      fullPath: '/player/profile'
+      preLoaderRoute: typeof AuthenticatedPlayerProfileRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/player/matches': {
+      id: '/_authenticated/player/matches'
+      path: '/player/matches'
+      fullPath: '/player/matches'
+      preLoaderRoute: typeof AuthenticatedPlayerMatchesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/player/dashboard': {
       id: '/_authenticated/player/dashboard'
       path: '/player/dashboard'
       fullPath: '/player/dashboard'
       preLoaderRoute: typeof AuthenticatedPlayerDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/player/career': {
+      id: '/_authenticated/player/career'
+      path: '/player/career'
+      fullPath: '/player/career'
+      preLoaderRoute: typeof AuthenticatedPlayerCareerRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/org/dashboard': {
@@ -285,31 +529,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrgDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/admin/_authed/sports/$sportId': {
+      id: '/admin/_authed/sports/$sportId'
+      path: '/$sportId'
+      fullPath: '/admin/sports/$sportId'
+      preLoaderRoute: typeof AdminAuthedSportsSportIdRouteImport
+      parentRoute: typeof AdminAuthedSportsRoute
+    }
+    '/admin/_authed/matches/$matchId': {
+      id: '/admin/_authed/matches/$matchId'
+      path: '/$matchId'
+      fullPath: '/admin/matches/$matchId'
+      preLoaderRoute: typeof AdminAuthedMatchesMatchIdRouteImport
+      parentRoute: typeof AdminAuthedMatchesRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedOrgDashboardRoute: typeof AuthenticatedOrgDashboardRoute
+  AuthenticatedPlayerCareerRoute: typeof AuthenticatedPlayerCareerRoute
   AuthenticatedPlayerDashboardRoute: typeof AuthenticatedPlayerDashboardRoute
+  AuthenticatedPlayerMatchesRoute: typeof AuthenticatedPlayerMatchesRoute
+  AuthenticatedPlayerProfileRoute: typeof AuthenticatedPlayerProfileRoute
+  AuthenticatedPlayerReportsRoute: typeof AuthenticatedPlayerReportsRoute
+  AuthenticatedPlayerReviewsRoute: typeof AuthenticatedPlayerReviewsRoute
+  AuthenticatedPlayerSettingsRoute: typeof AuthenticatedPlayerSettingsRoute
+  AuthenticatedPlayerTeamsRoute: typeof AuthenticatedPlayerTeamsRoute
+  AuthenticatedPlayerTransactionsRoute: typeof AuthenticatedPlayerTransactionsRoute
+  AuthenticatedPlayerUploadRoute: typeof AuthenticatedPlayerUploadRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedOrgDashboardRoute: AuthenticatedOrgDashboardRoute,
+  AuthenticatedPlayerCareerRoute: AuthenticatedPlayerCareerRoute,
   AuthenticatedPlayerDashboardRoute: AuthenticatedPlayerDashboardRoute,
+  AuthenticatedPlayerMatchesRoute: AuthenticatedPlayerMatchesRoute,
+  AuthenticatedPlayerProfileRoute: AuthenticatedPlayerProfileRoute,
+  AuthenticatedPlayerReportsRoute: AuthenticatedPlayerReportsRoute,
+  AuthenticatedPlayerReviewsRoute: AuthenticatedPlayerReviewsRoute,
+  AuthenticatedPlayerSettingsRoute: AuthenticatedPlayerSettingsRoute,
+  AuthenticatedPlayerTeamsRoute: AuthenticatedPlayerTeamsRoute,
+  AuthenticatedPlayerTransactionsRoute: AuthenticatedPlayerTransactionsRoute,
+  AuthenticatedPlayerUploadRoute: AuthenticatedPlayerUploadRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface AdminAuthedMatchesRouteChildren {
+  AdminAuthedMatchesMatchIdRoute: typeof AdminAuthedMatchesMatchIdRoute
+}
+
+const AdminAuthedMatchesRouteChildren: AdminAuthedMatchesRouteChildren = {
+  AdminAuthedMatchesMatchIdRoute: AdminAuthedMatchesMatchIdRoute,
+}
+
+const AdminAuthedMatchesRouteWithChildren =
+  AdminAuthedMatchesRoute._addFileChildren(AdminAuthedMatchesRouteChildren)
+
+interface AdminAuthedSportsRouteChildren {
+  AdminAuthedSportsSportIdRoute: typeof AdminAuthedSportsSportIdRoute
+}
+
+const AdminAuthedSportsRouteChildren: AdminAuthedSportsRouteChildren = {
+  AdminAuthedSportsSportIdRoute: AdminAuthedSportsSportIdRoute,
+}
+
+const AdminAuthedSportsRouteWithChildren =
+  AdminAuthedSportsRoute._addFileChildren(AdminAuthedSportsRouteChildren)
+
 interface AdminAuthedRouteChildren {
   AdminAuthedDashboardRoute: typeof AdminAuthedDashboardRoute
+  AdminAuthedMatchesRoute: typeof AdminAuthedMatchesRouteWithChildren
+  AdminAuthedSportsRoute: typeof AdminAuthedSportsRouteWithChildren
 }
 
 const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
   AdminAuthedDashboardRoute: AdminAuthedDashboardRoute,
+  AdminAuthedMatchesRoute: AdminAuthedMatchesRouteWithChildren,
+  AdminAuthedSportsRoute: AdminAuthedSportsRouteWithChildren,
 }
 
 const AdminAuthedRouteWithChildren = AdminAuthedRoute._addFileChildren(

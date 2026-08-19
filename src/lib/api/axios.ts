@@ -36,7 +36,7 @@ async function refreshAccessToken(): Promise<string | null> {
       {},                         // Empty body
       { withCredentials: true }, 
     );
-    const newAccess: string = res.data.accessToken ?? res.data.access;
+    const newAccess: string = res.data.data.accessToken;
     useAuthStore.getState().setAccessTokens(newAccess);
     return newAccess;
   } catch {
@@ -55,7 +55,15 @@ async function refreshAccessToken(): Promise<string | null> {
 
 
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    const body = res.data as
+      | { success?: boolean; data?: unknown; message?: string; error_code?: string }
+      | undefined;
+    if (body && typeof body === "object" && "success" in body && "data" in body) {
+      res.data = body.data;
+    }
+    return res;
+  },
   async (error: AxiosError) => {
     const original = error.config as
       | (InternalAxiosRequestConfig & { _retry?: boolean })

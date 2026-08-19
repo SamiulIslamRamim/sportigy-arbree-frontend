@@ -22,11 +22,11 @@ export function useLogout() {
   const logout = useAuthStore((s) => s.logout);
   return async () => {
     try {
-      await authApi.logout();     // ✅ Invalidate token on server + clear cookie
+      await authApi.logout();     
     } catch {
       // Even if server call fails, clear local state
     }
-    logout();                     // ✅ Clear in-memory state
+    logout();                     
     toast.success('Signed out');
   };
 }

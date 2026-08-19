@@ -20,13 +20,6 @@ export function OrganizationHeader() {
     );
   }
 
-  const initials = org.name
-    .split(" ")
-    .slice(0, 2)
-    .map((s) => s[0])
-    .join("")
-    .toUpperCase();
-
   return (
     <section className="rounded-2xl border bg-card p-5">
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 sm:flex sm:flex-wrap sm:items-center sm:justify-between">

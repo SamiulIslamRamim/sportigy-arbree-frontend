@@ -4,10 +4,22 @@ export interface AuthUser {
   id: string;
   email: string;
   username: string;
-  role: UserRole;
-  name?: string | null;
-  categories?: string[] | null;
+  role: UserRole; 
+  name: string;
+  bio?: string | null;
+  gender?: "male" | "female" | "other" | null;
+  birthday?: string | null;      
+  height?: string | null;
+  weight?: string | null;
+  contactNo?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country: string;
+  websiteUrl?: string | null;
+  isActive: boolean;
+  categories?: string[] | null;  
 }
+
 
 // export interface TokenPair {
 //   access: string;
@@ -33,7 +45,7 @@ export interface PlayerRegistrationPayload {
   height: string;
   weight: string;
   categories: string[];
-  websiteUrl?: string;
+  website_url?: string;
   password: string;
   country: string;
 }
@@ -44,7 +56,7 @@ export interface OrganizationRegistrationPayload {
   contactNo: string;
   username: string;
   categories: string[];
-  websiteUrl?: string;
+  website_url?: string;
   city: string;
   state: string;
   country: string;

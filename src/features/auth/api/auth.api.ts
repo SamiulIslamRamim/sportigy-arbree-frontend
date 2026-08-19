@@ -24,18 +24,18 @@ export const authApi = {
     return data;
   },
   verifySession: async (): Promise<{ accessToken: string; user: AuthUser }> => {
-    const { data } = await api.get('/token/verify/');
+    const { data } = await api.get('/token/verify');
     return data;
   },
   logout: async (): Promise<void> => {
-    await api.post('/logout/');
+    await api.post('/logout');
   },
   registerPlayer: async (payload: PlayerRegistrationPayload) => {
     const { data } = await api.post("/players/", payload);
     return data;
   },
   registerOrganization: async (payload: OrganizationRegistrationPayload) => {
-    const { data } = await api.post("/employee/", payload);
+    const { data } = await api.post("/organizations/", payload);
     return data;
   },
   verifyOtp: async (payload: VerifyOtpPayload) => {

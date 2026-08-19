@@ -1,110 +1,79 @@
-import { Sheet, SheetContent } from "#/components/ui/sheet";
 import { AdvertisementCard } from "#/features/player/components/AdvertisementCard";
 import { CareerStatisticsTable } from "#/features/player/components/CareeerStatisticTable";
 import { DashboardSkeleton } from "#/features/player/components/DashboardSkeleton";
+import { EarningsCard } from "#/features/player/components/EarningsCard";
 import { LatestResultsCard } from "#/features/player/components/LatestResultsCard";
+import { MatchOverviewCard } from "#/features/player/components/MatchOverviewCard";
+import { PlayerLayout } from "#/features/player/components/PlayerLayout";
 import { PlayerProfileCard } from "#/features/player/components/PlayerProfileCard";
 import { RecentMatchesTable } from "#/features/player/components/RecentmstchesTable";
-import { PlayerSidebar } from "#/features/player/components/Sidebar";
+import { AddSportProfileDialog } from "#/features/player/components/AddSportProfileDialog";
 import { SportTabs } from "#/features/player/components/SportTabs";
-import { StatsCard } from "#/features/player/components/StatsCard";
 import { TeamsCard } from "#/features/player/components/TeamsCard";
-import { TopNavbar } from "#/features/player/components/TopNavbar";
 import { UpcomingMatchCard } from "#/features/player/components/UpcomingMatchcard";
+import { Button } from "#/components/ui/button";
 import { useDashboard } from "#/features/player/hooks";
-import { formatCurrency } from "#/features/player/lib/format";
-import type { SportKey } from "#/features/player/types";
+import { useSportProfiles } from "#/features/player/hooks/useSportProfiles";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { Plus } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/player/dashboard")({
+  ssr: false,
   head: () => ({ meta: [{ title: "Player Dashboard — Spotig" }] }),
   component: PlayerDashboardPage,
 });
 
+const SPORT_KEY = "player.dashboard.sportId";
+
 function PlayerDashboardPage() {
-  const { data, isLoading } = useDashboard();
-  const [sport, setSport] = useState<SportKey>("cricket");
-  const [mobileNav, setMobileNav] = useState(false);
+  const { data: profiles } = useSportProfiles();
+  const [sportId, setSportId] = useState<string>(() => localStorage.getItem(SPORT_KEY) ?? "");
+  const [addOpen, setAddOpen] = useState(false);
+
+  useEffect(() => {
+    if (!sportId && profiles?.length) setSportId(profiles[0].sportId);
+  }, [profiles, sportId]);
+  useEffect(() => {
+    if (sportId) localStorage.setItem(SPORT_KEY, sportId);
+  }, [sportId]);
+
+  const { data, isLoading } = useDashboard(sportId);
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <div className="flex">
-        {/* Desktop sidebar */}
-        <div className="hidden w-64 shrink-0 border-r bg-card lg:block">
-          <div className="sticky top-0 h-screen">
-            <PlayerSidebar />
+    <PlayerLayout>
+      <PlayerProfileCard sportId={sportId} />
+      {isLoading || !data ? (
+        <DashboardSkeleton />
+      ) : (
+        <>
+          <AdvertisementCard height="h-32 md:h-40" />
+          <div className="flex flex-wrap items-center gap-3">
+            <SportTabs profiles={profiles ?? []} value={sportId} onChange={setSportId} />
+            <Button type="button" variant="outline" size="sm" className="gap-1" onClick={() => setAddOpen(true)}>
+              <Plus className="h-4 w-4" />
+              Add sport
+            </Button>
           </div>
-        </div>
+          <EarningsCard />
+          <MatchOverviewCard sportId={sportId} />
 
-        {/* Mobile drawer */}
-        <Sheet open={mobileNav} onOpenChange={setMobileNav}>
-          <SheetContent side="left" className="w-72 p-0">
-            <PlayerSidebar onNavigate={() => setMobileNav(false)} />
-          </SheetContent>
-        </Sheet>
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+            <div className="space-y-6 min-w-0">
+              <RecentMatchesTable matches={data.recentMatches} />
+              <CareerStatisticsTable career={data.career} />
+            </div>
 
-        <div className="min-w-0 flex-1">
-          <TopNavbar onMenuClick={() => setMobileNav(true)} />
-
-          <main className="mx-auto max-w-[1400px] space-y-6 p-4 md:p-6">
-            <PlayerProfileCard />
-            {isLoading || !data ? (
-              <DashboardSkeleton />
-            ) : (
-              <>
-                <AdvertisementCard height="h-32 md:h-40" />
-
-
-                <SportTabs value={sport} onChange={setSport} />
-
-                <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-                  <div className="space-y-6 min-w-0">
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <StatsCard
-                        title="Earnings Overview"
-                        items={[
-                          { label: "This month", value: formatCurrency(data.earnings.thisMonth, data.earnings.currency) },
-                          { label: "Last 3 months", value: formatCurrency(data.earnings.lastThreeMonths, data.earnings.currency) },
-                          { label: "This year", value: formatCurrency(data.earnings.thisYear, data.earnings.currency) },
-                        ]}
-                        footer={
-                          <button className="w-full pt-1 text-sm font-medium text-primary hover:underline">
-                            View all transactions
-                          </button>
-                        }
-                      />
-                      <StatsCard
-                        title="Match Overview"
-                        items={[
-                          { label: "This month", value: data.matchOverview.thisMonth, hint: "matches" },
-                          { label: "Last 3 months", value: data.matchOverview.lastThreeMonths, hint: "matches" },
-                          { label: "This year", value: data.matchOverview.thisYear, hint: "matches" },
-                        ]}
-                        footer={
-                          <button className="w-full pt-1 text-sm font-medium text-primary hover:underline">
-                            View all overview
-                          </button>
-                        }
-                      />
-                    </div>
-
-                    <RecentMatchesTable matches={data.recentMatches} />
-                    <CareerStatisticsTable career={data.career} />
-                  </div>
-
-                  <aside className="space-y-6">
-                    <AdvertisementCard height="h-56" />
-                    <LatestResultsCard results={data.latestResults} />
-                    <UpcomingMatchCard match={data.upcomingMatch} />
-                    <TeamsCard teams={data.teams} />
-                  </aside>
-                </div>
-              </>
-            )}
-          </main>
-        </div>
-      </div>
-    </div>
+            <aside className="space-y-6">
+              <AdvertisementCard height="h-56" />
+              <LatestResultsCard results={data.latestResults} />
+              <UpcomingMatchCard match={data.upcomingMatch} />
+              <TeamsCard sportId={sportId} />
+            </aside>
+          </div>
+        </>
+      )}
+      <AddSportProfileDialog open={addOpen} onOpenChange={setAddOpen} />
+    </PlayerLayout>
   );
 }

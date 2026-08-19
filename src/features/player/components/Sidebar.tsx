@@ -15,20 +15,19 @@ import {
   Star,
   Settings,
   LogOut,
-  Zap,
 } from "lucide-react";
 
 const items = [
-  { title: "Dashboard", url: "/player/dashboard", icon: LayoutDashboard },
-  { title: "Career Statistics", url: "/player-dashboard", icon: BarChart3, hash: "career" },
-  { title: "Matches", url: "/player-dashboard", icon: Trophy, hash: "matches" },
-  { title: "Team History", url: "/player-dashboard", icon: History },
-  { title: "Upload", url: "/player-dashboard", icon: Upload },
-  { title: "Profile", url: "/player-dashboard", icon: User },
-  { title: "Transactions", url: "/player-dashboard", icon: Receipt },
-  { title: "Reports", url: "/player-dashboard", icon: FileText },
-  { title: "Reviews", url: "/player-dashboard", icon: Star },
-  { title: "Settings", url: "/player-dashboard", icon: Settings },
+  { title: "Dashboard", url: "/player/dashboard" as const, icon: LayoutDashboard },
+  { title: "Career Statistics", url: "/player/career" as const, icon: BarChart3 },
+  { title: "Matches", url: "/player/matches" as const, icon: Trophy },
+  { title: "Team History", url: "/player/teams" as const, icon: History },
+  { title: "Upload", url: "/player/upload" as const, icon: Upload },
+  { title: "Profile", url: "/player/profile" as const, icon: User },
+  { title: "Transactions", url: "/player/transactions" as const, icon: Receipt },
+  { title: "Reports", url: "/player/reports" as const, icon: FileText },
+  { title: "Reviews", url: "/player/reviews" as const, icon: Star },
+  { title: "Settings", url: "/player/settings" as const, icon: Settings },
 ];
 
 export function PlayerSidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -54,11 +53,11 @@ export function PlayerSidebar({ onNavigate }: { onNavigate?: () => void }) {
       </Link>
 
       <nav className="flex flex-1 flex-col gap-1">
-        {items.map((item, i) => {
-          const active = i === 0 && pathname === item.url;
+        {items.map((item) => {
+          const active = pathname === item.url;
           return (
             <Link
-              key={`${item.title}-${i}`}
+              key={item.title}
               to={item.url}
               onClick={onNavigate}
               className={cn(
