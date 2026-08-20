@@ -9,10 +9,6 @@ export interface AuthUser {
   categories?: string[] | null;
 }
 
-// export interface TokenPair {
-//   access: string;
-//   refresh: string;
-// }
 
 export interface LoginPayload {
   identifier: string; // email or username
@@ -20,14 +16,14 @@ export interface LoginPayload {
 }
 
 export interface LoginResponse {
-  access: string;
+  accessToken: string;
   user?: AuthUser;
 }
 
 export interface PlayerRegistrationPayload {
   name: string;
   email: string;
-  birthday: string; // ISO date
+  birthday: string; 
   contactNo: string;
   username: string;
   height: string;

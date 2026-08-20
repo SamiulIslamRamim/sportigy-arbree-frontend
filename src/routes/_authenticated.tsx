@@ -13,7 +13,7 @@ beforeLoad: async ({ location }) => {
     try {
       const data = await authApi.verifySession();
       useAuthStore.getState().setSession({
-        access: data.accessToken,
+        accessToken: data.accessToken,
         user: data.user,
       });
       // Continue to the protected route

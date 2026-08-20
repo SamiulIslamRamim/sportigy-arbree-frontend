@@ -1,15 +1,56 @@
-import { api } from "#/lib/api/axios";
-import type { PlayerInformation, UpdatePlayerInformationInput } from "../types/player.types";
+import { api, unwrap } from "#/lib/api/axios";
+import type { ApiEnvelope } from "#/lib/api/axios";
+import type {
+  BasicProfile,
+  SportProfile,
+  SportSummary,
+  UpdateBasicProfileInput,
+} from "../types/player.types";
 
 export const playerApi = {
-  getPlayerInformation: async (): Promise<PlayerInformation> => {
-    const res = await api.get<PlayerInformation>("/player-information");
-    return res.data;
+  getBasicProfile: async (): Promise<BasicProfile> => {
+    const res = await api.get<ApiEnvelope<{ profile: BasicProfile }>>("/player/profile");
+    return unwrap(res).profile;
   },
-  updatePlayerInformation: async (
-    input: UpdatePlayerInformationInput,
-  ): Promise<PlayerInformation> => {
-    const res = await api.patch<PlayerInformation>("/player-information", input);
-    return res.data;
+
+  updateBasicProfile: async (input: UpdateBasicProfileInput): Promise<BasicProfile> => {
+    const res = await api.patch<ApiEnvelope<{ profile: BasicProfile }>>("/player/profile", input);
+    return unwrap(res).profile;
+  },
+
+  listSportProfiles: async (): Promise<SportProfile[]> => {
+    const res = await api.get<ApiEnvelope<{ profiles: SportProfile[] }>>("/player/sport-profiles");
+    return unwrap(res).profiles;
+  },
+
+  getSportProfile: async (sportId: string): Promise<SportProfile> => {
+    const res = await api.get<ApiEnvelope<{ profile: SportProfile }>>(
+      `/player/sport-profiles/${sportId}`,
+    );
+    return unwrap(res).profile;
+  },
+
+  updateSportProfile: async (
+    sportId: string,
+    input: { academy?: string | null; values?: { fieldId: string; optionId: string }[] },
+  ): Promise<{ id: string }> => {
+    const res = await api.patch<ApiEnvelope<{ profile: { id: string } }>>(
+      `/player/sport-profiles/${sportId}`,
+      input,
+    );
+    return unwrap(res).profile;
+  },
+
+  addSportProfile: async (input: { sportId: string; academy?: string }): Promise<{ id: string }> => {
+    const res = await api.post<ApiEnvelope<{ profile: { id: string } }>>(
+      "/player/sport-profiles",
+      input,
+    );
+    return unwrap(res).profile;
+  },
+
+  listSports: async (): Promise<SportSummary[]> => {
+    const res = await api.get<ApiEnvelope<{ sports: SportSummary[] }>>("/sports");
+    return unwrap(res).sports;
   },
 };

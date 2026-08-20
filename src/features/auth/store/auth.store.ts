@@ -1,12 +1,11 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
 import type { AuthUser } from '../types/auth.types'
 
 interface AuthState {
   user: AuthUser | null
   accessToken: string | null
   isAuthenticated: boolean
-  setSession: (data: { user?: AuthUser | null; access: string }) => void
+  setSession: (data: { user?: AuthUser | null; accessToken: string }) => void
   setAccessTokens: (token: string | null) => void
   setUser: (user: AuthUser | null) => void
   logout: () => void
@@ -20,7 +19,7 @@ export const useAuthStore = create<AuthState>()(
       setSession: (data) =>
         set({
           user: data.user ?? null,
-          accessToken: data.access,
+          accessToken: data.accessToken,
           isAuthenticated: true,
         }),
       setAccessTokens: (token) =>

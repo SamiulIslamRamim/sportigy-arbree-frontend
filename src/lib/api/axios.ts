@@ -9,6 +9,17 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000";
 
+export interface ApiEnvelope<T> {
+  success: boolean;
+  message: string | null;
+  error_code: string | number | null;
+  data: T;
+}
+
+export function unwrap<T>(res: { data: ApiEnvelope<T> }): T {
+  return res.data.data;
+}
+
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
@@ -30,13 +41,15 @@ let refreshPromise: Promise<string | null> | null = null;
 
 async function refreshAccessToken(): Promise<string | null> {
   try {
-
-    const res = await axios.post(
+    const res = await axios.post<ApiEnvelope<{ accessToken?: string }>>(
       `${BASE_URL}/token/refresh/`,
-      {},                         // Empty body
-      { withCredentials: true }, 
+      {},
+      { withCredentials: true },
     );
-    const newAccess: string = res.data.accessToken ?? res.data.access;
+    const newAccess = res.data.data.accessToken ?? null;
+    if (!newAccess) {
+      throw new Error("No access token in refresh response");
+    }
     useAuthStore.getState().setAccessTokens(newAccess);
     return newAccess;
   } catch {

@@ -1,7 +1,9 @@
 import type { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
-import type { AdminLoginPayload, AdminLoginResponse, AdminRefreshResponse, AdminVerifyResponse } from "../types/admin-auth.types";
+import type { AdminLoginPayload, AdminLoginResponse, AdminVerifyResponse } from "../types/admin-auth.types";
 import { useAdminAuthStore } from "../auth/admin-auth.store";
+import { unwrap } from "@/lib/api/axios";
+import type { ApiEnvelope } from "@/lib/api/axios";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000";
 
@@ -15,12 +17,15 @@ let refreshPromise: Promise<string | null> | null = null;
 
 async function refreshAdminAccessToken(): Promise<string | null> {
   try {
-    const res = await axios.post<AdminRefreshResponse>(
+    const res = await axios.post<ApiEnvelope<{ accessToken?: string }>>(
       `${BASE_URL}/admin/token/refresh/`,
       {},
       { withCredentials: true },
     );
-    const token = res.data.accessToken;
+    const token = res.data.data.accessToken;
+    if (!token) {
+      throw new Error("No access token in refresh response");
+    }
     useAdminAuthStore.getState().setAccessToken(token);
     return token;
   } catch {
@@ -34,7 +39,7 @@ async function refreshAdminAccessToken(): Promise<string | null> {
 
 adminApi.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = useAdminAuthStore.getState().accessToken;
-  if (token && config.headers) {
+  if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   config.withCredentials = true;
@@ -69,16 +74,16 @@ adminApi.interceptors.response.use(
 
 export const adminAuthApi = {
   login: async (payload: AdminLoginPayload) => {
-    const res = await adminApi.post<AdminLoginResponse>("/admin/token/", payload);
-    return res.data;
+    const res = await adminApi.post<ApiEnvelope<AdminLoginResponse>>("/admin/token/", payload);
+    return unwrap(res);
   },
   verifySession: async () => {
-    const res = await adminApi.get<AdminVerifyResponse>("/admin/token/verify/");
-    return res.data;
+    const res = await adminApi.get<ApiEnvelope<AdminVerifyResponse>>("/admin/token/verify/");
+    return unwrap(res);
   },
   logout: async () => {
-    const res = await adminApi.post<{ message: string }>("/admin/token/logout/");
-    return res.data;
+    const res = await adminApi.post<ApiEnvelope<{ message: string }>>("/admin/logout");
+    return unwrap(res);
   },
 };
 

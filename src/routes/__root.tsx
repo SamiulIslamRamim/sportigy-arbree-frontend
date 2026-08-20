@@ -86,7 +86,7 @@ function RootComponent() {
     if (!isAuthenticated) {
       authApi.verifySession()
         .then((data) => {
-          setSession({ access: data.accessToken, user: data.user });
+          setSession({ accessToken: data.accessToken, user: data.user });
         })
         .catch(() => {
           // No valid session — user stays logged out

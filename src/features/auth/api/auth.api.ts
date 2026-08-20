@@ -1,4 +1,5 @@
-import { api } from "@/lib/api/axios";
+import { api, unwrap } from "@/lib/api/axios";
+import type { ApiEnvelope } from "@/lib/api/axios";
 import type {
   AuthUser,
   ForgotPasswordPayload,
@@ -12,42 +13,42 @@ import type {
 
 export const authApi = {
   login: async (payload: LoginPayload): Promise<LoginResponse> => {
-    const { data } = await api.post<LoginResponse>("/token/", {
+    const res = await api.post<ApiEnvelope<LoginResponse>>("/token/", {
       username: payload.identifier,
       email: payload.identifier,
       password: payload.password,
     });
-    return data;
+    return unwrap(res);
   },
   refreshToken: async (): Promise<{ accessToken: string }> => {
-    const { data } = await api.post('/token/refresh/', {});
-    return data;
+    const res = await api.post<ApiEnvelope<{ accessToken: string }>>('/token/refresh/', {});
+    return unwrap(res);
   },
   verifySession: async (): Promise<{ accessToken: string; user: AuthUser }> => {
-    const { data } = await api.get('/token/verify/');
-    return data;
+    const res = await api.get<ApiEnvelope<{ accessToken: string; user: AuthUser }>>('/token/verify/');
+    return unwrap(res);
   },
   logout: async (): Promise<void> => {
     await api.post('/logout/');
   },
   registerPlayer: async (payload: PlayerRegistrationPayload) => {
-    const { data } = await api.post("/players/", payload);
-    return data;
+    const res = await api.post<ApiEnvelope<{ email: string }>>("/players/", payload);
+    return unwrap(res);
   },
   registerOrganization: async (payload: OrganizationRegistrationPayload) => {
-    const { data } = await api.post("/employee/", payload);
-    return data;
+    const res = await api.post<ApiEnvelope<{ email: string }>>("/organizations/", payload);
+    return unwrap(res);
   },
   verifyOtp: async (payload: VerifyOtpPayload) => {
-    const { data } = await api.post("/verify-registration/", payload);
-    return data;
+    const res = await api.post<ApiEnvelope<{ id: string; email: string; role: string }>>("/verify-registration/", payload);
+    return unwrap(res);
   },
   forgotPassword: async (payload: ForgotPasswordPayload) => {
-    const { data } = await api.post("/forgot-password/", payload);
-    return data;
+    const res = await api.post<ApiEnvelope<Record<string, never>>>("/forgot-password/", payload);
+    return unwrap(res);
   },
   resetPassword: async (payload: ResetPasswordPayload) => {
-    const { data } = await api.post("/reset-password/", payload);
-    return data;
+    const res = await api.post<ApiEnvelope<Record<string, never>>>("/reset-password/", payload);
+    return unwrap(res);
   },
 };

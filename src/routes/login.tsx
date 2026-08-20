@@ -20,6 +20,7 @@ export const Route = createFileRoute("/login")({
   validateSearch: searchSchema,
   beforeLoad: ({ search }) => {
     const {isAuthenticated, user} = useAuthStore.getState();
+    console.log(user?.role);
     if(isAuthenticated){
       throw redirect({
     to: search.redirect ?? (user?.role === "player" ? "/player/dashboard" : user?.role === "organization" ? "/org/dashboard" : "/dashboard")

@@ -1,32 +1,23 @@
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { Button } from "#/components/ui/button";
+import { Input } from "#/components/ui/input";
+import { Textarea } from "#/components/ui/textarea";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '#/components/ui/field'
-import { Input } from '#/components/ui/input'
+} from "#/components/ui/field";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '#/components/ui/select'
-import { Controller, useForm } from 'react-hook-form'
-import {
-  BATTING_STYLE_LABELS,
-  BATTING_STYLES,
-  BOWLING_STYLE_LABELS,
-  BOWLING_STYLES,
-  CRICKET_PLAYING_ROLES,
-  PLAYING_ROLE_LABELS,
-} from '../types/player.types'
-import type { PlayerInformation } from '../types/player.types'
-import { Button } from '#/components/ui/button'
-import { Loader2 } from 'lucide-react'
-import { useEffect } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { toDateInputValue } from '../utils/date'
+} from "#/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -34,61 +25,87 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '#/components/ui/dialog'
-import { useUpdatePlayerInformation } from '../hooks/useUpdatePlayerInformation'
-import { updatePlayerInformationSchema } from '../schemas/player.schema'
-import type { UpdatePlayerInformationFormValues } from '../schemas/player.schema'
+} from "#/components/ui/dialog";
+import { toDateInputValue } from "../utils/date";
+import { useUpdateBasicProfile, useUpdateSportProfile } from "../hooks/usePlayerProfile";
+import { editProfileSchema } from "../schemas/player.schema";
+import type { EditProfileFormValues } from "../schemas/player.schema";
+import type { BasicProfile } from "../types/player.types";
 
 interface Props {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  player: PlayerInformation
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  basic: BasicProfile;
+  sportId: string | null;
+  academy: string | null;
 }
 
-const defaultsFrom = (
-  p: PlayerInformation,
-): UpdatePlayerInformationFormValues => ({
-  name: p.name ?? '',
-  academy: p.academy ?? '',
-  weight: p.weight ?? '',
-  height: p.height ?? '',
-  playingRole: p.playingRole ?? 'BATSMAN',
-  battingStyle: p.battingStyle ?? 'RIGHT_HAND_BAT',
-  bowlingStyle: p.bowlingStyle ?? 'NONE',
-  birthday: toDateInputValue(p.birthday),
-  city: p.city ?? '',
-  state: p.state ?? '',
-  country: p.country ?? '',
-})
+const GENDER_LABELS: Record<string, string> = { male: "Male", female: "Female", other: "Other" };
 
-export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
-  const mutation = useUpdatePlayerInformation()
+const defaultsFrom = (basic: BasicProfile, academy: string | null): EditProfileFormValues => ({
+  name: basic.name,
+  bio: basic.bio ?? "",
+  gender: basic.gender ?? "other",
+  birthday: toDateInputValue(basic.birthday),
+  height: basic.height ?? "",
+  weight: basic.weight ?? "",
+  contactNo: basic.contactNo ?? "",
+  city: basic.city ?? "",
+  state: basic.state ?? "",
+  country: basic.country ?? "",
+  academy: academy ?? "",
+});
 
-  const form = useForm<UpdatePlayerInformationFormValues>({
-    resolver: zodResolver(updatePlayerInformationSchema),
-    defaultValues: defaultsFrom(player),
-  })
+export function PlayerProfileEditDialog({ open, onOpenChange, basic, sportId, academy }: Props) {
+  const updateBasic = useUpdateBasicProfile();
+  const updateSport = useUpdateSportProfile();
+  const submitting = updateBasic.isPending || updateSport.isPending;
+
+  const form = useForm<EditProfileFormValues>({
+    resolver: zodResolver(editProfileSchema),
+    defaultValues: defaultsFrom(basic, academy),
+  });
 
   useEffect(() => {
-    if (open) form.reset(defaultsFrom(player))
-  }, [open, player, form])
+    if (open) form.reset(defaultsFrom(basic, academy));
+  }, [open, basic, academy, form]);
 
   const onSubmit = form.handleSubmit((values) => {
-    mutation.mutate(values, {
-      onSuccess: () => onOpenChange(false),
-    })
-  })
+    const finish = () => onOpenChange(false);
+    const afterBasic = () => {
+      if (!sportId) {
+        finish();
+        return;
+      }
+      updateSport.mutate(
+        { sportId, input: { academy: values.academy || null } },
+        { onSuccess: finish },
+      );
+    };
 
-  const submitting = mutation.isPending
+    updateBasic.mutate(
+      {
+        name: values.name,
+        bio: values.bio || null,
+        gender: values.gender,
+        birthday: values.birthday,
+        height: values.height || null,
+        weight: values.weight || null,
+        contactNo: values.contactNo || null,
+        city: values.city || null,
+        state: values.state || null,
+        country: values.country,
+      },
+      { onSuccess: afterBasic },
+    );
+  });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit player information</DialogTitle>
-          <DialogDescription>
-            Update your profile details. All fields are required.
-          </DialogDescription>
+          <DialogDescription>Update your profile details.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={onSubmit} className="grid gap-4 md:grid-cols-2">
@@ -97,10 +114,7 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
               name="name"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field
-                  className="md:col-span-2"
-                  data-invalid={fieldState.invalid}
-                >
+                <Field className="md:col-span-2" data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="name">Name</FieldLabel>
                   <Input
                     {...field}
@@ -108,28 +122,49 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
                     placeholder="Full name"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
 
             <Controller
-              name="academy"
+              name="bio"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field className="md:col-span-2" data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="bio">Bio</FieldLabel>
+                  <Textarea
+                    {...field}
+                    id="bio"
+                    value={field.value ?? ""}
+                    rows={3}
+                    placeholder="Short bio"
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="gender"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="academy">Academy</FieldLabel>
-                  <Input
-                    {...field}
-                    id="academy"
-                    placeholder="Academy"
-                    aria-invalid={fieldState.invalid}
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  <FieldLabel>Gender</FieldLabel>
+                  <Select value={field.value ?? "other"} onValueChange={field.onChange}>
+                    <SelectTrigger aria-invalid={fieldState.invalid}>
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(GENDER_LABELS).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -146,9 +181,7 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
                     type="date"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -162,12 +195,11 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
                   <Input
                     {...field}
                     id="weight"
+                    value={field.value ?? ""}
                     placeholder="73"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -181,87 +213,29 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
                   <Input
                     {...field}
                     id="height"
+                    value={field.value ?? ""}
                     placeholder="178"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
 
             <Controller
-              name="playingRole"
+              name="contactNo"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Playing Role</FieldLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger aria-invalid={fieldState.invalid}>
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CRICKET_PLAYING_ROLES.map((role) => (
-                        <SelectItem key={role} value={role}>
-                          {PLAYING_ROLE_LABELS[role]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="battingStyle"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Batting Style</FieldLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger aria-invalid={fieldState.invalid}>
-                      <SelectValue placeholder="Select batting style" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BATTING_STYLES.map((style) => (
-                        <SelectItem key={style} value={style}>
-                          {BATTING_STYLE_LABELS[style]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="bowlingStyle"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Bowling Style</FieldLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger aria-invalid={fieldState.invalid}>
-                      <SelectValue placeholder="Select bowling style" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BOWLING_STYLES.map((style) => (
-                        <SelectItem key={style} value={style}>
-                          {BOWLING_STYLE_LABELS[style]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                <Field className="md:col-span-2" data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="contactNo">Phone</FieldLabel>
+                  <Input
+                    {...field}
+                    id="contactNo"
+                    value={field.value ?? ""}
+                    placeholder="+880..."
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -275,12 +249,11 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
                   <Input
                     {...field}
                     id="city"
+                    value={field.value ?? ""}
                     placeholder="City"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -294,12 +267,11 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
                   <Input
                     {...field}
                     id="state"
+                    value={field.value ?? ""}
                     placeholder="State"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
@@ -308,10 +280,7 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
               name="country"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field
-                  className="md:col-span-2"
-                  data-invalid={fieldState.invalid}
-                >
+                <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="country">Country</FieldLabel>
                   <Input
                     {...field}
@@ -319,12 +288,30 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
                     placeholder="Country"
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
+
+            {sportId ? (
+              <Controller
+                name="academy"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="academy">Academy</FieldLabel>
+                    <Input
+                      {...field}
+                      id="academy"
+                      value={field.value ?? ""}
+                      placeholder="Academy"
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+            ) : null}
           </FieldGroup>
 
           <DialogFooter className="md:col-span-2">
@@ -336,7 +323,6 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
             >
               Cancel
             </Button>
-
             <Button type="submit" disabled={submitting}>
               {submitting ? (
                 <>
@@ -344,12 +330,12 @@ export function PlayerProfileEditDialog({ open, onOpenChange, player }: Props) {
                   Saving...
                 </>
               ) : (
-                'Save changes'
+                "Save changes"
               )}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

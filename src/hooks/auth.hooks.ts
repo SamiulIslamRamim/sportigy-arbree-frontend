@@ -11,7 +11,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: (payload: LoginPayload) => authApi.login(payload),
     onSuccess: (data) => {
-      setSession({ access: data.access, user: data.user });
+      setSession({ accessToken: data.accessToken, user: data.user });
       toast.success("Welcome back");
     },
     onError: (err) => toast.error(extractApiError(err, "Login failed")),
