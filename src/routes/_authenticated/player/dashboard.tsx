@@ -93,7 +93,7 @@ function PlayerDashboardPage() {
                     </div>
 
                     <RecentMatchesTable matches={data.recentMatches} />
-                    <CareerStatisticsTable career={data.career} />
+                    <CareerStatisticsTable sportId={activeSportId} />
                   </div>
 
                   <aside className="space-y-6">

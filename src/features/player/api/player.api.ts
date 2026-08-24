@@ -1,5 +1,6 @@
 import { api, unwrap } from "#/lib/api/axios";
 import type { ApiEnvelope } from "#/lib/api/axios";
+import type { CareerStatsResponse } from "../types/career.types";
 import type {
   BasicProfile,
   SportProfile,
@@ -52,5 +53,13 @@ export const playerApi = {
   listSports: async (): Promise<SportSummary[]> => {
     const res = await api.get<ApiEnvelope<{ sports: SportSummary[] }>>("/sports");
     return unwrap(res).sports;
+  },
+
+  getCareerStats: async (sportId: string): Promise<CareerStatsResponse> => {
+    const res = await api.get<ApiEnvelope<CareerStatsResponse>>(
+      "/player/matches/stats/career/",
+      { params: { sportId } },
+    );
+    return unwrap(res);
   },
 };

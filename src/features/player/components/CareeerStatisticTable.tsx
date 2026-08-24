@@ -1,93 +1,143 @@
+import { useMemo } from "react";
 import { Badge } from "#/components/ui/badge";
-import { Button } from "#/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
+import { Skeleton } from "#/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#/components/ui/table";
-import { formatLabels } from "../lib/format";
-import type { BattingStatistics, BowlingStatistics, CareerStatistics } from "../types";
+import { useCareerStats } from "../hooks/useCareerStats";
+import type { CareerCategoryStats, CareerFieldStat } from "../types/career.types";
 
+interface MetricTable {
+  key: string;
+  label: string;
+  fields: CareerFieldStat[];
+}
 
-const battingCols: { key: keyof BattingStatistics; label: string }[] = [
-  { key: "matches", label: "Mat" },
-  { key: "innings", label: "Inns" },
-  { key: "runs", label: "Runs" },
-  { key: "highestScore", label: "HS" },
-  { key: "average", label: "Avg" },
-  { key: "strikeRate", label: "SR" },
-  { key: "fifties", label: "50s" },
-  { key: "hundreds", label: "100s" },
-  { key: "fours", label: "4s" },
-  { key: "sixes", label: "6s" },
-  { key: "notOuts", label: "NO" },
-];
+function buildMetricTables(categories: CareerCategoryStats[]): MetricTable[] {
+  const ordered = new Map<string, { label: string; fields: CareerFieldStat[] }>();
+  for (const category of categories) {
+    for (const metric of category.metrics) {
+      const key = metric.metricId ?? metric.metric;
+      let entry = ordered.get(key);
+      if (!entry) {
+        entry = { label: metric.metric, fields: [] };
+        ordered.set(key, entry);
+      }
+      for (const field of metric.fields) {
+        if (!entry.fields.some((f) => f.fieldId === field.fieldId)) {
+          entry.fields.push(field);
+        }
+      }
+    }
+  }
+  return [...ordered.entries()]
+    .map(([key, entry]) => ({ key, ...entry }))
+    .filter((table) => table.fields.length > 0);
+}
 
-const bowlingCols: { key: keyof BowlingStatistics; label: string }[] = [
-  { key: "matches", label: "Mat" },
-  { key: "overs", label: "Overs" },
-  { key: "maidens", label: "Mdns" },
-  { key: "wickets", label: "Wkts" },
-  { key: "economy", label: "Econ" },
-  { key: "average", label: "Avg" },
-  { key: "bestBowling", label: "Best" },
-  { key: "strikeRate", label: "SR" },
-];
+const cellValue = (
+  category: CareerCategoryStats,
+  tableKey: string,
+  fieldId: string,
+): string => {
+  const metric = category.metrics.find((m) => (m.metricId ?? m.metric) === tableKey);
+  const field = metric?.fields.find((f) => f.fieldId === fieldId);
+  if (!field) return "\u2013";
+  const n = field.isComputed ? field.value : field.total;
+  if (n === null || n === undefined) return "\u2013";
+  return Number.isInteger(n) ? String(n) : n.toFixed(2);
+};
 
-export function CareerStatisticsTable({ career }: { career: CareerStatistics }) {
+export function CareerStatisticsTable({ sportId }: { sportId: string | null }) {
+  const { data, isLoading, isError } = useCareerStats(sportId);
+
+  const tables = useMemo(
+    () => (data ? buildMetricTables(data.categories) : []),
+    [data],
+  );
+
   return (
-    <Card className="border-border/60">
+    <Card className="overflow-hidden border-border/60">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base font-semibold">Career Statistics</CardTitle>
-        <Button variant="link" size="sm" className="text-primary">View all</Button>
       </CardHeader>
       <CardContent className="space-y-6 px-0 pb-0">
-        <Section title="Batting & Fielding">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/40">
-                  <TableHead className="pl-6">Format</TableHead>
-                  {battingCols.map((c) => (
-                    <TableHead key={c.key as string} className="text-right">{c.label}</TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {career.batting.map((row) => (
-                  <TableRow key={row.format}>
-                    <TableCell className="pl-6"><Badge variant="secondary" className="rounded-md">{formatLabels[row.format]}</Badge></TableCell>
-                    {battingCols.map((c) => (
-                      <TableCell key={c.key as string} className="text-right tabular-nums">{String(row[c.key])}</TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </Section>
+        {!sportId && (
+          <p className="px-6 pb-4 text-sm text-muted-foreground">
+            Add a sport profile to see your career statistics.
+          </p>
+        )}
 
-        <Section title="Bowling">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/40">
-                  <TableHead className="pl-6">Format</TableHead>
-                  {bowlingCols.map((c) => (
-                    <TableHead key={c.key as string} className="text-right">{c.label}</TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {career.bowling.map((row) => (
-                  <TableRow key={row.format}>
-                    <TableCell className="pl-6"><Badge variant="secondary" className="rounded-md">{formatLabels[row.format]}</Badge></TableCell>
-                    {bowlingCols.map((c) => (
-                      <TableCell key={c.key as string} className="text-right tabular-nums">{String(row[c.key])}</TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        {isLoading && (
+          <div className="space-y-3 px-6 pb-4">
+            <Skeleton className="h-5 w-40" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
           </div>
-        </Section>
+        )}
+
+        {isError && (
+          <p className="px-6 pb-4 text-sm text-destructive">
+            Failed to load career statistics. Please try again.
+          </p>
+        )}
+
+        {data && data.categories.length === 0 && (
+          <p className="px-6 pb-4 text-sm text-muted-foreground">
+            No approved matches yet — stats will appear once matches are approved.
+          </p>
+        )}
+
+        {data &&
+          tables.map((table) => (
+            <Section key={table.key} title={table.label}>
+              <div className="max-h-64 overflow-auto">
+                <Table className="w-full table-fixed">
+                  <colgroup>
+                    <col className="w-28" />
+                    {table.fields.map((field) => (
+                      <col key={field.fieldId} />
+                    ))}
+                  </colgroup>
+                  <TableHeader>
+                    <TableRow className="bg-muted/40 hover:bg-muted/40">
+                      <TableHead className="sticky top-0 z-10 bg-muted pl-6">
+                        Format
+                      </TableHead>
+                      {table.fields.map((field) => (
+                        <TableHead
+                          key={field.fieldId}
+                          title={field.name}
+                          className="truncate text-right"
+                        >
+                          {field.name}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {data.categories.map((category) => (
+                      <TableRow key={category.categoryId ?? "uncategorized"}>
+                        <TableCell className="pl-6">
+                          <Badge variant="secondary" className="max-w-full truncate rounded-md">
+                            {category.categoryName ?? "Uncategorized"}
+                          </Badge>
+                        </TableCell>
+                        {table.fields.map((field) => (
+                          <TableCell
+                            key={field.fieldId}
+                            className="text-right tabular-nums"
+                          >
+                            {cellValue(category, table.key, field.fieldId)}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </Section>
+          ))}
       </CardContent>
     </Card>
   );
@@ -95,7 +145,7 @@ export function CareerStatisticsTable({ career }: { career: CareerStatistics }) 
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div>
+    <div className="min-w-0">
       <h4 className="px-6 pb-2 text-sm font-semibold text-muted-foreground">{title}</h4>
       {children}
     </div>
