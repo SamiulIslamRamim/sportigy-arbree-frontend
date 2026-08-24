@@ -14,7 +14,6 @@ import { UpcomingMatchCard } from "#/features/player/components/UpcomingMatchcar
 import { useDashboard } from "#/features/player/hooks";
 import { useSportProfiles } from "#/features/player/hooks/usePlayerProfile";
 import { formatCurrency } from "#/features/player/lib/format";
-import type { SportKey } from "#/features/player/types";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -29,7 +28,7 @@ function PlayerDashboardPage() {
   const [sportId, setSportId] = useState<string | null>(null);
   const [mobileNav, setMobileNav] = useState(false);
 
-  const activeSportId = sportId ?? sportProfiles[0]?.sportId ?? null;
+  const activeSportId = sportId ?? sportProfiles[0]?.sportId;
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -52,7 +51,7 @@ function PlayerDashboardPage() {
           <TopNavbar onMenuClick={() => setMobileNav(true)} />
 
           <main className="mx-auto max-w-[1400px] space-y-6 p-4 md:p-6">
-            <PlayerProfileCard />
+            <PlayerProfileCard sportId={activeSportId}/>
             {isLoading || !data ? (
               <DashboardSkeleton />
             ) : (
@@ -60,7 +59,7 @@ function PlayerDashboardPage() {
                 <AdvertisementCard height="h-32 md:h-40" />
 
 
-                <SportTabs value={sportId} onChange={setSportId} />
+                <SportTabs value={activeSportId} onChange={setSportId} />
 
                 <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
                   <div className="space-y-6 min-w-0">
