@@ -30,7 +30,8 @@ async function refreshAdminAccessToken(): Promise<string | null> {
     return token;
   } catch {
     useAdminAuthStore.getState().clear();
-    if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+    const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+    if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
       window.location.href = "/admin/login";
     }
     return null;

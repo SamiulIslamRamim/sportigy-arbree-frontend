@@ -1,3 +1,4 @@
+import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import {
   Field,
@@ -13,6 +14,11 @@ import { AuthLayout } from '#/features/auth/components/AuthLayout'
 import { PasswordInput } from '#/features/auth/components/PasswordInput'
 import type { UserRole } from '#/features/auth/types/auth.types'
 
+
+
+
+
+
 import {
   playerSection1,
   playerSection2,
@@ -22,7 +28,6 @@ import {
   playerSection3,
 } from '#/features/auth/schemas/auth.schema'
 import { useRegisterOrganization, useRegisterPlayer } from '#/hooks/auth.hooks'
-import { cn } from '#/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft, ArrowRight, Building2, Check, Loader2, Trophy, X } from 'lucide-react'

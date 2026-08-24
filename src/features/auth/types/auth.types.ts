@@ -1,4 +1,5 @@
 export type UserRole = "player" | "organization";
+// done 
 
 export interface AuthUser {
   id: string;

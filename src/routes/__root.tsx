@@ -1,4 +1,4 @@
-import { Link, Outlet, createRootRoute, useRouter } from '@tanstack/react-router'
+import { Link, Outlet, createRootRoute, useRouter, useRouterState } from '@tanstack/react-router'
 import { QueryClientProvider } from "@tanstack/react-query";
 import '../styles.css'
 import { useEffect } from 'react'
@@ -80,8 +80,12 @@ export const Route = createRootRoute({
 function RootComponent() {
     const setSession = useAuthStore((s) => s.setSession);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
+    // Admin pages are verified by src/routes/admin/_authed.tsx — never here
+    if (pathname.startsWith('/admin')) return;
+
     // Only attempt to restore session if we don't already have one
     if (!isAuthenticated) {
       authApi.verifySession()
@@ -92,7 +96,7 @@ function RootComponent() {
           // No valid session — user stays logged out
         });
     }
-  }, []); 
+  }, []);
   return (
     <>
     
@@ -100,17 +104,7 @@ function RootComponent() {
 
       <Outlet />
       <Toaster richColors position="top-right" />
-      {/* <TanStackDevtools
-        config={{
-          position: 'bottom-right',
-        }}
-        plugins={[
-          {
-            name: 'TanStack Router',
-            render: <TanStackRouterDevtoolsPanel />,
-          },
-        ]}
-      /> */}
+      {}
     </QueryClientProvider>
     </>
   )
