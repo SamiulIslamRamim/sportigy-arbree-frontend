@@ -1,6 +1,6 @@
 import { Sheet, SheetContent } from "#/components/ui/sheet";
 import { AdvertisementCard } from "#/features/player/components/AdvertisementCard";
-import { CareerStatisticsTable } from "#/features/player/components/CareeerStatisticTable";
+import { CareerStatisticsTable } from "#/features/player/components/CareerStatisticTable";
 import { DashboardSkeleton } from "#/features/player/components/DashboardSkeleton";
 import { LatestResultsCard } from "#/features/player/components/LatestResultsCard";
 import { PlayerProfileCard } from "#/features/player/components/PlayerProfileCard";
