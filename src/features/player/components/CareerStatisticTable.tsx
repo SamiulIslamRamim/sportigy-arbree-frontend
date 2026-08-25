@@ -55,7 +55,10 @@ export function CareerStatisticsTable({ sportId }: { sportId: string | null }) {
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base font-semibold">Career Statistics</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6 px-0 pb-0">
+      {metricOrder.length === 0 ? (
+        <p className="text-center text-red-500">There is no Career Statistic for the sport</p>
+      ) : (
+        <CardContent className="space-y-6 px-0 pb-0">
         {metricOrder.map(({ metricId, metric }) => {
           const matchKey = metricId ?? metric;
 
@@ -118,6 +121,7 @@ export function CareerStatisticsTable({ sportId }: { sportId: string | null }) {
           );
         })}
       </CardContent>
+      )}
     </Card>
   );
 }
