@@ -26,6 +26,7 @@ type Item = {
 const items: Item[] = [
   { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
   { title: "Add Categories", url: "/admin/sports", icon: FolderPlus },
+  { title: "Review Match", url: "/admin/review", icon: FolderPlus },
   { title: "Hiring Request", icon: Briefcase },
   { title: "Player List", icon: Users },
   { title: "Team List", icon: Shield },

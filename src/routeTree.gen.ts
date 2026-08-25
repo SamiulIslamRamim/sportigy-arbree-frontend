@@ -19,6 +19,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminAuthedRouteImport } from './routes/admin/_authed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AdminAuthedReviewRouteImport } from './routes/admin/_authed/review'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
 import { Route as AuthenticatedPlayerDashboardRouteImport } from './routes/_authenticated/player/dashboard'
 import { Route as AuthenticatedPlayerCareerStatsRouteImport } from './routes/_authenticated/player/career-stats'
@@ -75,6 +76,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AdminAuthedReviewRoute = AdminAuthedReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
 const AdminAuthedDashboardRoute = AdminAuthedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/player/career-stats': typeof AuthenticatedPlayerCareerStatsRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
+  '/admin/review': typeof AdminAuthedReviewRoute
   '/admin/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
   '/admin/sports/': typeof AdminAuthedSportsIndexRoute
 }
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/player/career-stats': typeof AuthenticatedPlayerCareerStatsRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
+  '/admin/review': typeof AdminAuthedReviewRoute
   '/admin/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
   '/admin/sports': typeof AdminAuthedSportsIndexRoute
 }
@@ -160,6 +168,7 @@ export interface FileRoutesById {
   '/_authenticated/player/career-stats': typeof AuthenticatedPlayerCareerStatsRoute
   '/_authenticated/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
   '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
+  '/admin/_authed/review': typeof AdminAuthedReviewRoute
   '/admin/_authed/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
   '/admin/_authed/sports/': typeof AdminAuthedSportsIndexRoute
 }
@@ -179,6 +188,7 @@ export interface FileRouteTypes {
     | '/player/career-stats'
     | '/player/dashboard'
     | '/admin/dashboard'
+    | '/admin/review'
     | '/admin/sports/$sportId'
     | '/admin/sports/'
   fileRoutesByTo: FileRoutesByTo
@@ -196,6 +206,7 @@ export interface FileRouteTypes {
     | '/player/career-stats'
     | '/player/dashboard'
     | '/admin/dashboard'
+    | '/admin/review'
     | '/admin/sports/$sportId'
     | '/admin/sports'
   id:
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '/_authenticated/player/career-stats'
     | '/_authenticated/player/dashboard'
     | '/admin/_authed/dashboard'
+    | '/admin/_authed/review'
     | '/admin/_authed/sports/$sportId'
     | '/admin/_authed/sports/'
   fileRoutesById: FileRoutesById
@@ -302,6 +314,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/admin/_authed/review': {
+      id: '/admin/_authed/review'
+      path: '/review'
+      fullPath: '/admin/review'
+      preLoaderRoute: typeof AdminAuthedReviewRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
     '/admin/_authed/dashboard': {
       id: '/admin/_authed/dashboard'
       path: '/dashboard'
@@ -367,12 +386,14 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 
 interface AdminAuthedRouteChildren {
   AdminAuthedDashboardRoute: typeof AdminAuthedDashboardRoute
+  AdminAuthedReviewRoute: typeof AdminAuthedReviewRoute
   AdminAuthedSportsSportIdRoute: typeof AdminAuthedSportsSportIdRoute
   AdminAuthedSportsIndexRoute: typeof AdminAuthedSportsIndexRoute
 }
 
 const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
   AdminAuthedDashboardRoute: AdminAuthedDashboardRoute,
+  AdminAuthedReviewRoute: AdminAuthedReviewRoute,
   AdminAuthedSportsSportIdRoute: AdminAuthedSportsSportIdRoute,
   AdminAuthedSportsIndexRoute: AdminAuthedSportsIndexRoute,
 }
