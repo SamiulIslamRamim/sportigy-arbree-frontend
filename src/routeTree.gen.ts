@@ -21,6 +21,7 @@ import { Route as AdminAuthedRouteImport } from './routes/admin/_authed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
 import { Route as AuthenticatedPlayerDashboardRouteImport } from './routes/_authenticated/player/dashboard'
+import { Route as AuthenticatedPlayerCareerStatsRouteImport } from './routes/_authenticated/player/career-stats'
 import { Route as AuthenticatedOrgDashboardRouteImport } from './routes/_authenticated/org/dashboard'
 import { Route as AdminAuthedSportsIndexRouteImport } from './routes/admin/_authed/sports.index'
 import { Route as AdminAuthedSportsSportIdRouteImport } from './routes/admin/_authed/sports.$sportId'
@@ -85,6 +86,12 @@ const AuthenticatedPlayerDashboardRoute =
     path: '/player/dashboard',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedPlayerCareerStatsRoute =
+  AuthenticatedPlayerCareerStatsRouteImport.update({
+    id: '/player/career-stats',
+    path: '/player/career-stats',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedOrgDashboardRoute =
   AuthenticatedOrgDashboardRouteImport.update({
     id: '/org/dashboard',
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
+  '/player/career-stats': typeof AuthenticatedPlayerCareerStatsRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
@@ -130,6 +138,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
+  '/player/career-stats': typeof AuthenticatedPlayerCareerStatsRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
@@ -148,6 +157,7 @@ export interface FileRoutesById {
   '/admin/_authed': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/_authenticated/org/dashboard': typeof AuthenticatedOrgDashboardRoute
+  '/_authenticated/player/career-stats': typeof AuthenticatedPlayerCareerStatsRoute
   '/_authenticated/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
   '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/_authed/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/login'
     | '/org/dashboard'
+    | '/player/career-stats'
     | '/player/dashboard'
     | '/admin/dashboard'
     | '/admin/sports/$sportId'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/login'
     | '/org/dashboard'
+    | '/player/career-stats'
     | '/player/dashboard'
     | '/admin/dashboard'
     | '/admin/sports/$sportId'
@@ -199,6 +211,7 @@ export interface FileRouteTypes {
     | '/admin/_authed'
     | '/admin/login'
     | '/_authenticated/org/dashboard'
+    | '/_authenticated/player/career-stats'
     | '/_authenticated/player/dashboard'
     | '/admin/_authed/dashboard'
     | '/admin/_authed/sports/$sportId'
@@ -303,6 +316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPlayerDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/player/career-stats': {
+      id: '/_authenticated/player/career-stats'
+      path: '/player/career-stats'
+      fullPath: '/player/career-stats'
+      preLoaderRoute: typeof AuthenticatedPlayerCareerStatsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/org/dashboard': {
       id: '/_authenticated/org/dashboard'
       path: '/org/dashboard'
@@ -330,12 +350,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedOrgDashboardRoute: typeof AuthenticatedOrgDashboardRoute
+  AuthenticatedPlayerCareerStatsRoute: typeof AuthenticatedPlayerCareerStatsRoute
   AuthenticatedPlayerDashboardRoute: typeof AuthenticatedPlayerDashboardRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedOrgDashboardRoute: AuthenticatedOrgDashboardRoute,
+  AuthenticatedPlayerCareerStatsRoute: AuthenticatedPlayerCareerStatsRoute,
   AuthenticatedPlayerDashboardRoute: AuthenticatedPlayerDashboardRoute,
 }
 

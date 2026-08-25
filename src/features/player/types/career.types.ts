@@ -3,6 +3,7 @@ export type CareerResultKey = "WIN" | "LOSS" | "DRAW" | "TIE" | "NO_RESULT";
 export interface CareerFieldStat {
   fieldId: string;
   name: string;
+  slug: string;
   metricId: string | null;
   isComputed: boolean;
   total?: number;
@@ -26,4 +27,25 @@ export interface CareerCategoryStats {
 export interface CareerStatsResponse {
   sportId: string;
   categories: CareerCategoryStats[];
+}
+
+export interface CareerTeamStats {
+  teamKey: string;
+  teamLabel: string;
+  teamOrgId: string | null;
+  isHidden: boolean;
+  matchesPlayed: number;
+  resultBreakdown: Record<CareerResultKey, number>;
+  metrics: CareerMetricGroup[];
+}
+
+export interface CareerByTeamResponse {
+  sportId: string;
+  hidden: "include" | "exclude";
+  teams: CareerTeamStats[];
+}
+
+export interface SportCategoryOption {
+  id: string;
+  name: string;
 }

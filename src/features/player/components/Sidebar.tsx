@@ -15,12 +15,11 @@ import {
   Star,
   Settings,
   LogOut,
-  Zap,
 } from "lucide-react";
 
 const items = [
   { title: "Dashboard", url: "/player/dashboard", icon: LayoutDashboard },
-  { title: "Career Statistics", url: "/player-dashboard", icon: BarChart3, hash: "career" },
+  { title: "Career Statistics", url: "/player/career-stats", icon: BarChart3 },
   { title: "Matches", url: "/player-dashboard", icon: Trophy, hash: "matches" },
   { title: "Team History", url: "/player-dashboard", icon: History },
   { title: "Upload", url: "/player-dashboard", icon: Upload },
@@ -41,6 +40,9 @@ export function PlayerSidebar({ onNavigate }: { onNavigate?: () => void }) {
     navigate({ to: "/login" });
   };
 
+  const isActive = (url: string) =>
+    pathname === url || pathname.startsWith(`${url}/`);
+
   return (
     <aside className="flex h-full w-full flex-col gap-2 bg-card p-4">
       <Link to="/player/dashboard" className="mb-4 flex items-center gap-2 px-2" onClick={onNavigate}>
@@ -55,7 +57,7 @@ export function PlayerSidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       <nav className="flex flex-1 flex-col gap-1">
         {items.map((item, i) => {
-          const active = i === 0 && pathname === item.url;
+          const active = Boolean(item.url) && isActive(item.url);
           return (
             <Link
               key={`${item.title}-${i}`}

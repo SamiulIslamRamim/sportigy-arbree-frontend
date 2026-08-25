@@ -1,12 +1,22 @@
 import { api, unwrap } from "#/lib/api/axios";
 import type { ApiEnvelope } from "#/lib/api/axios";
-import type { CareerStatsResponse } from "../types/career.types";
+import type {
+  CareerByTeamResponse,
+  CareerStatsResponse,
+  SportCategoryOption,
+} from "../types/career.types";
 import type {
   BasicProfile,
   SportProfile,
   SportSummary,
   UpdateBasicProfileInput,
 } from "../types/player.types";
+
+export interface TeamVisibilityInput {
+  sportId: string;
+  teamOrgId?: string;
+  teamName?: string;
+}
 
 export const playerApi = {
   getBasicProfile: async (): Promise<BasicProfile> => {
@@ -59,6 +69,40 @@ export const playerApi = {
     const res = await api.get<ApiEnvelope<CareerStatsResponse>>(
       "/player/matches/stats/career/",
       { params: { sportId } },
+    );
+    return unwrap(res);
+  },
+
+  getCareerByTeam: async (
+    sportId: string,
+    categoryId?: string | null,
+  ): Promise<CareerByTeamResponse> => {
+    const res = await api.get<ApiEnvelope<CareerByTeamResponse>>(
+      "/player/matches/stats/by-team/",
+      { params: { sportId, ...(categoryId ? { categoryId } : {}) } },
+    );
+    return unwrap(res);
+  },
+
+  listSportCategories: async (sportId: string): Promise<SportCategoryOption[]> => {
+    const res = await api.get<ApiEnvelope<{ categories: SportCategoryOption[] }>>(
+      `/player/sports/${sportId}/categories/`,
+    );
+    return unwrap(res).categories;
+  },
+
+  hideTeam: async (input: TeamVisibilityInput): Promise<{ teamKey: string }> => {
+    const res = await api.post<ApiEnvelope<{ teamKey: string }>>(
+      "/player/matches/team-visibility/",
+      input,
+    );
+    return unwrap(res);
+  },
+
+  unhideTeam: async (input: TeamVisibilityInput): Promise<{ teamKey: string }> => {
+    const res = await api.delete<ApiEnvelope<{ teamKey: string }>>(
+      "/player/matches/team-visibility/",
+      { data: input },
     );
     return unwrap(res);
   },
