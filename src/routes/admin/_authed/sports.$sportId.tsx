@@ -54,7 +54,7 @@ function AdminSportDetailPage() {
           </Link>
         </Button>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{sport.name}</h1>
+          <h1 className="text-2xl font-semibold tracking-wider md:text-3xl">{sport.name}</h1>
           <Badge variant={sport.isActive ? "default" : "secondary"}>
             {sport.isActive ? "Active" : "Inactive"}
           </Badge>

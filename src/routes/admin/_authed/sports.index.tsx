@@ -45,7 +45,7 @@ function AdminSportsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Manage Sports</h1>
+          <h1 className="text-2xl font-semibold tracking-wider md:text-3xl">Manage Sports</h1>
           <p className="text-sm text-muted-foreground">
             Define sports and configure their categories, metrics and dynamic fields.
           </p>
@@ -82,7 +82,7 @@ function AdminSportsPage() {
                   </Badge>
                 </div>
                 <CardDescription className="line-clamp-2">
-                  {sport.description || sport.slug}
+                  {sport.description}
                 </CardDescription>
               </CardHeader>
               <CardContent className="mt-auto flex items-center gap-2">

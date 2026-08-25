@@ -97,7 +97,7 @@ export function FieldFormDialog({
     );
     setFormulaMultiplier(
       field?.formulaMultiplier === null || field?.formulaMultiplier === undefined
-        ? ""
+        ? "100"
         : String(field.formulaMultiplier),
     );
     setOptions(
