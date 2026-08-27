@@ -21,6 +21,7 @@ import { Route as AdminAuthedRouteImport } from './routes/admin/_authed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AdminAuthedReviewRouteImport } from './routes/admin/_authed/review'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
+import { Route as AuthenticatedPlayerMatchesRouteImport } from './routes/_authenticated/player/matches'
 import { Route as AuthenticatedPlayerDashboardRouteImport } from './routes/_authenticated/player/dashboard'
 import { Route as AuthenticatedPlayerCareerStatsRouteImport } from './routes/_authenticated/player/career-stats'
 import { Route as AuthenticatedOrgDashboardRouteImport } from './routes/_authenticated/org/dashboard'
@@ -86,6 +87,12 @@ const AdminAuthedDashboardRoute = AdminAuthedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
+const AuthenticatedPlayerMatchesRoute =
+  AuthenticatedPlayerMatchesRouteImport.update({
+    id: '/player/matches',
+    path: '/player/matches',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPlayerDashboardRoute =
   AuthenticatedPlayerDashboardRouteImport.update({
     id: '/player/dashboard',
@@ -129,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
   '/player/career-stats': typeof AuthenticatedPlayerCareerStatsRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
+  '/player/matches': typeof AuthenticatedPlayerMatchesRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/review': typeof AdminAuthedReviewRoute
   '/admin/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
@@ -147,6 +155,7 @@ export interface FileRoutesByTo {
   '/org/dashboard': typeof AuthenticatedOrgDashboardRoute
   '/player/career-stats': typeof AuthenticatedPlayerCareerStatsRoute
   '/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
+  '/player/matches': typeof AuthenticatedPlayerMatchesRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/review': typeof AdminAuthedReviewRoute
   '/admin/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
@@ -167,6 +176,7 @@ export interface FileRoutesById {
   '/_authenticated/org/dashboard': typeof AuthenticatedOrgDashboardRoute
   '/_authenticated/player/career-stats': typeof AuthenticatedPlayerCareerStatsRoute
   '/_authenticated/player/dashboard': typeof AuthenticatedPlayerDashboardRoute
+  '/_authenticated/player/matches': typeof AuthenticatedPlayerMatchesRoute
   '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/_authed/review': typeof AdminAuthedReviewRoute
   '/admin/_authed/sports/$sportId': typeof AdminAuthedSportsSportIdRoute
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/org/dashboard'
     | '/player/career-stats'
     | '/player/dashboard'
+    | '/player/matches'
     | '/admin/dashboard'
     | '/admin/review'
     | '/admin/sports/$sportId'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/org/dashboard'
     | '/player/career-stats'
     | '/player/dashboard'
+    | '/player/matches'
     | '/admin/dashboard'
     | '/admin/review'
     | '/admin/sports/$sportId'
@@ -224,6 +236,7 @@ export interface FileRouteTypes {
     | '/_authenticated/org/dashboard'
     | '/_authenticated/player/career-stats'
     | '/_authenticated/player/dashboard'
+    | '/_authenticated/player/matches'
     | '/admin/_authed/dashboard'
     | '/admin/_authed/review'
     | '/admin/_authed/sports/$sportId'
@@ -328,6 +341,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedDashboardRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
+    '/_authenticated/player/matches': {
+      id: '/_authenticated/player/matches'
+      path: '/player/matches'
+      fullPath: '/player/matches'
+      preLoaderRoute: typeof AuthenticatedPlayerMatchesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/player/dashboard': {
       id: '/_authenticated/player/dashboard'
       path: '/player/dashboard'
@@ -371,6 +391,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedOrgDashboardRoute: typeof AuthenticatedOrgDashboardRoute
   AuthenticatedPlayerCareerStatsRoute: typeof AuthenticatedPlayerCareerStatsRoute
   AuthenticatedPlayerDashboardRoute: typeof AuthenticatedPlayerDashboardRoute
+  AuthenticatedPlayerMatchesRoute: typeof AuthenticatedPlayerMatchesRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -378,6 +399,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedOrgDashboardRoute: AuthenticatedOrgDashboardRoute,
   AuthenticatedPlayerCareerStatsRoute: AuthenticatedPlayerCareerStatsRoute,
   AuthenticatedPlayerDashboardRoute: AuthenticatedPlayerDashboardRoute,
+  AuthenticatedPlayerMatchesRoute: AuthenticatedPlayerMatchesRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

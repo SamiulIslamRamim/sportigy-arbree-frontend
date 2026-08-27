@@ -20,7 +20,7 @@ import {
 const items = [
   { title: "Dashboard", url: "/player/dashboard", icon: LayoutDashboard },
   { title: "Career Statistics", url: "/player/career-stats", icon: BarChart3 },
-  { title: "Matches", url: "/player-dashboard", icon: Trophy, hash: "matches" },
+  { title: "Matches", url: "/player/matches", icon: Trophy, hash: "matches" },
   { title: "Team History", url: "/player-dashboard", icon: History },
   { title: "Upload", url: "/player-dashboard", icon: Upload },
   { title: "Profile", url: "/player-dashboard", icon: User },
